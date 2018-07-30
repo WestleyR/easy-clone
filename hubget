@@ -3,7 +3,7 @@
 # Created by: WestleyK
 # Email: westley@sylabs.io
 # Date: Jul 30, 2018
-# version-1.0.3
+# version-1.0.4
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -46,7 +46,7 @@ sleep 0.1s
 echo "cloning repo"
 sleep 0.25s
 
-#git clone $URL
+git clone $URL
 
 IS_FILE=$( cat ~/easy-clone/option-files | grep '$REPO' )
 if [[ -z $IS_FILE ]]; then

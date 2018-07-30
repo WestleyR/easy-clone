@@ -3,7 +3,7 @@
 # Created by: Westley K
 # email: westley@sylabs.io
 # Date: Jul 30, 2018
-# version-1.0.2
+# version-1.0.3
 #
 # MIT License
 #
@@ -53,8 +53,7 @@ if [ -z $OPTION ]; then
 			echo "Installing" $SCRIPT_NAME\ "..."
 			chmod +x $SCRIPT_NAME
 			cp $SCRIPT_NAME $PATH_INSTALL
-			source ~/easy-clone/auto-complete.sh
-			echo "source ~/easy-clone/auto-complete.sh >> ~/.bashrc"
+			source /home/pi/easy-clone/auto-complete.sh
 			echo "Installed to" $PATH_INSTALL
 			exit
 		fi
@@ -63,8 +62,7 @@ if [ -z $OPTION ]; then
 	echo "Installing" $SCRIPT_NAME\ "..."
 	chmod +x $SCRIPT_NAME
 	cp $SCRIPT_NAME $PATH_INSTALL
-	source ~/easy-clone/auto-complete.sh
-	echo "source ~/easy-clone/auto-complete.sh >> ~/.bashrc"
+	source /home/pi/easy-clone/auto-complete.sh
 	echo "Installed to" $PATH_INSTALL
 	exit
 

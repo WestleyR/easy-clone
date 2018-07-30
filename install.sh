@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Created by: Westley K
 # email: westley@sylabs.io
-# Date: Jul 27, 2018
-# version-1.0.0
+# Date: Jul 30, 2018
+# version-1.0.2
 #
 # MIT License
 #
@@ -51,8 +51,10 @@ if [ -z $OPTION ]; then
 		read INPUT
 		if [ $INPUT = "y" ] || [ $INPUT = "Y" ]; then
 			echo "Installing" $SCRIPT_NAME\ "..."
-			chmod +x pi-backlight
+			chmod +x $SCRIPT_NAME
 			cp $SCRIPT_NAME $PATH_INSTALL
+			source ~/easy-clone/auto-complete.sh
+			echo "source ~/easy-clone/auto-complete.sh >> ~/.bashrc"
 			echo "Installed to" $PATH_INSTALL
 			exit
 		fi
@@ -61,6 +63,8 @@ if [ -z $OPTION ]; then
 	echo "Installing" $SCRIPT_NAME\ "..."
 	chmod +x $SCRIPT_NAME
 	cp $SCRIPT_NAME $PATH_INSTALL
+	source ~/easy-clone/auto-complete.sh
+	echo "source ~/easy-clone/auto-complete.sh >> ~/.bashrc"
 	echo "Installed to" $PATH_INSTALL
 	exit
 

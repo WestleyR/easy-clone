@@ -3,7 +3,7 @@
 # Created by: WestleyK
 # Email: westley@sylabs.io
 # Date: Jul 30, 2018
-# version-1.0.4
+# version-1.0.5
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -29,14 +29,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#set -e
-
+VERSION_HUBGET="version-1.0.5"
+HUBGET_DATE="Jul 30, 2018"
 
 source ~/easy-clone/auto-complete.sh
 
 REPO=$1
 if [ -z $REPO ]; then
 	echo "Usage: hubget [USRNAME/REPO]"
+	exit
+fi
+if [[ $REPO == "-h" || $REPO == "-help" || $REPO == "--help" ]]; then
+	echo "Usage: hubget [USRNAME/RPEO]"
+	exit
+elif [[ $REPO == "-v" || $REPO == "-version" || $REPO == "--version" ]]; then
+	echo $VERSION_HUBGET
+	echo $HUBGET_DATE
+	echo "Source code: https://github.com/WestleyK/easy-clone"
 	exit
 fi
 URL="$( echo "https://github.com/"$REPO )"
@@ -50,7 +59,7 @@ git clone $URL
 
 IS_FILE=$( cat ~/easy-clone/option-files | grep '$REPO' )
 if [[ -z $IS_FILE ]]; then
-	echo $REPO >> ~/easy-clone/option-files
+	echo $REPO >> ~/easy-clone/option-url.txt
 fi
 
 echo "Done."

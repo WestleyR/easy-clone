@@ -57,7 +57,7 @@ sleep 0.25s
 
 git clone $URL
 
-IS_FILE=$( cat ~/easy-clone/option-files | grep '$REPO' )
+IS_FILE=$( cat ~/easy-clone/option-url.txt | grep '$REPO' )
 if [[ -z $IS_FILE ]]; then
 	echo $REPO >> ~/easy-clone/option-url.txt
 fi

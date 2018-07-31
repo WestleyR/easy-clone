@@ -3,7 +3,7 @@
 # Created by: WestleyK
 # Email: westley@sylabs.io
 # Date: Jul 30, 2018
-# version-1.0.0
+# version-1.0.1
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -32,7 +32,7 @@
 
 
 _auto-complete() {
-	OPTION=$( cat ~/easy-clone/option-files )
+	OPTION=$( cat ~/easy-clone/option-url.txt )
 	local cur=${COMP_WORDS[COMP_CWORD]}
 	COMPREPLY=( $(compgen -W "$OPTION" -- $cur) )
 }

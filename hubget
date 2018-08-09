@@ -2,8 +2,8 @@
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# Date: Jul 30, 2018
-# version-1.0.5
+# Date: Aug 9, 2018
+# version-1.0.6
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -29,8 +29,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-VERSION_HUBGET="version-1.0.5"
-HUBGET_DATE="Jul 30, 2018"
+VERSION_HUBGET="version-1.0.6"
+HUBGET_DATE="Aug 9, 2018"
 
 source ~/easy-clone/auto-complete.sh
 
@@ -57,7 +57,7 @@ sleep 0.25s
 
 git clone $URL
 
-IS_FILE=$( cat ~/easy-clone/option-url.txt | grep '$REPO' )
+IS_FILE="$( cat ~/easy-clone/option-url.txt | grep $REPO )"
 if [[ -z $IS_FILE ]]; then
 	echo $REPO >> ~/easy-clone/option-url.txt
 fi

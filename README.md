@@ -12,8 +12,8 @@
 cd ~/
 git clone https://github.com/WestleyK/easy-clone.git
 cd easy-clone/
-sudo ./install.sh
-echo "source ~/easy-clone/auto-complete.sh" >> ~/.bashrc
+./make.sh
+sudo ./make.sh install
 ```
 <br>
 

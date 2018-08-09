@@ -2,8 +2,8 @@
 #
 # Created by: Westley K
 # email: westley@sylabs.io
-# Date: Aug 8, 2018
-# version-1.0.4
+# Date: Aug 9, 2018
+# version-1.0.5
 #
 # MIT License
 #
@@ -33,23 +33,14 @@ SCRIPT_NAME="hubget"
 PATH_INSTALL="/usr/local/bin/"
 IS_ROOT="$( id -u )"
 
-#IS_ROOT=$( id -u )
-#
-#if [ $IS_ROOT != 0 ]; then
-#	echo "Please run as root!"
-#	echo "try: sudo ./install.sh"
-#	exit
-#fi
-
-
 
 help_menu() {
-	echo "Usage: ./install [OPTION]
-		-help (print help menu)
-		-install (install script)
-		-update (update script and repo)
-		-uninstall (uninstall script)
-	source code: https://github.com/WestleyK/easy-clone"
+	echo "Usage: ./make.sh [OPTION]
+		help (print help menu)
+		install (install script)
+		update (update script and repo)
+		uninstall (uninstall script)
+source code: https://github.com/WestleyK/easy-clone"
 	exit 0
 }
 
@@ -58,8 +49,8 @@ home_directory() {
 		USR_HOME="$( cat home-dir.txt )"
 	else
 		echo "Before installing, run:
-  $ ./install.sh  (then) 
-  $ sudo ./install.sh [OPTION]"
+  $ ./make.sh  (then) 
+  $ sudo ./make.sh [OPTION]"
 		exit 1
 	fi
 }
@@ -67,7 +58,7 @@ home_directory() {
 run_root() {
 	if [ $IS_ROOT != 0 ]; then
 		echo "Please run as root:
-		  $ sudo ./install.sh"
+		  $ sudo ./make.sh"
 		exit 1
 	fi
 }
@@ -81,7 +72,7 @@ is_home() {
 
 script_source() {
 	IS_SOURCE="$( cat $USR_HOME/.bashrc | grep 'easy-clone/auto-complete.sh' )"
-	if [[ -n $IS_SOURCE ]]; then
+	if [[ -z $IS_SOURCE ]]; then
 		echo "Adding source $USR_HOME/easy-clone/auto-complete.sh to $USR_HOME/.bashrc"
 		echo "source $USR_HOME/easy-clone/auto-complete.sh" >> $USR_HOME/.bashrc
 		source $USR_HOME/.bashrc
@@ -109,14 +100,13 @@ install_script() {
 		echo "Do you want to continue?"
 		echo -n "[y,n]:"
 		read INPUT
-		if [ $INPUT = "y" ] || [ $INPUT = "Y" ]; then
+		if [[ $INPUT = "y" ]] || [[ $INPUT = "Y" ]]; then
 			install_now
+		else
+			exit 0
 		fi
-		install_now
 	fi
-
-
-
+	install_now
 }
 
 if [[ -n $OPTION ]]; then
@@ -131,16 +121,16 @@ if [[ -n $OPTION ]]; then
 		uninstall_script
 	else
 		echo "Option not found :P  " $OPTION
-		echo "Try: ./install help"
+		echo "Try: ./make.sh help"
 		exit 1
 	fi
 fi
 
 if [[ -z $OPTION ]]; then
 	if [ $IS_ROOT != 0 ]; then
-		echo ${HOME} >> home-dir.txt
+		echo ${HOME} > home-dir.txt
 		echo "do:
-  $ sudo ./install install"
+  $ sudo ./make.sh install"
 		exit 0
 	else
 		echo "Do not run as root!"

@@ -150,6 +150,9 @@ fi
 if [[ -z $OPTION ]]; then
 	if [ $IS_ROOT != 0 ]; then
 		echo ${HOME} > home-dir.txt
+		touch install
+		touch update
+		touch uninstall
 		echo "do:
   $ sudo ./make.sh install"
 		exit 0

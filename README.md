@@ -14,6 +14,7 @@ Paste or type this in your terminal:
 ```
 curl https://raw.githubusercontent.com/WestleyK/easy-clone/master/easy-install.sh | sh
 sudo mv hubget /usr/local/bin/
+source ~/.bashrc
 ```
 Then to test it, type:
 ```
@@ -25,11 +26,9 @@ WestleyK/arduino-key-pad         WestleyK/drive-speed-test        WestleyK/pi-ba
 WestleyK/drive-mount             WestleyK/easy-clone              WestleyK/rpi-brightness          WestleyK/ssh-watcher
 WestleyK/drive-mounting-script   WestleyK/install-script
 ```
-If you don't, then type:
-```
-source ~/.bashrc
-```
-And it should work now.
+
+If you don't, then try to close then reopen the terminal and it should work now.
+If it still doesn't work, then please open an issue.
 
 <br>
 <br>

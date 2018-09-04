@@ -8,6 +8,32 @@
 
 <br>
 
+### Quick and easy install:
+
+Paste or type this in your terminal:
+```
+curl https://raw.githubusercontent.com/WestleyK/easy-clone/master/easy-install.sh | sh
+sudo mv hubget /usr/local/bin/
+```
+Then to test it, type:
+```
+hubget <TAB> <TAB>
+```
+And you should see some stuff like:
+```
+WestleyK/arduino-key-pad         WestleyK/drive-speed-test        WestleyK/pi-backlight            golang/dep
+WestleyK/drive-mount             WestleyK/easy-clone              WestleyK/rpi-brightness          WestleyK/ssh-watcher
+WestleyK/drive-mounting-script   WestleyK/install-script
+```
+If you don't, then type:
+```
+source ~/.bashrc
+```
+And it should work now.
+
+<br>
+<br>
+
 ```
 cd ~/
 git clone https://github.com/WestleyK/easy-clone.git

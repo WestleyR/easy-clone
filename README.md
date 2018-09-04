@@ -16,6 +16,9 @@ curl https://raw.githubusercontent.com/WestleyK/easy-clone/master/easy-install.s
 sudo mv hubget /usr/local/bin/
 source ~/.bashrc
 ```
+
+<br>
+
 Then to test it, type:
 ```
 hubget <TAB> <TAB>

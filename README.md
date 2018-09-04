@@ -36,6 +36,8 @@ If it still doesn't work, then please open an issue.
 <br>
 <br>
 
+### Install by cloning repo:
+
 ```
 cd ~/
 git clone https://github.com/WestleyK/easy-clone.git
@@ -45,6 +47,8 @@ sudo ./make.sh install
 source ~/.bashrc
 ```
 <br>
+
+## Usage:
 
 And now you can clone repo much easier. <br>
 Heres a example: <br>
@@ -65,7 +69,6 @@ hubget WestleyK/rpi-brightness
 
 
 ### better README comming soon
-
 
 
 <br>

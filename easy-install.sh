@@ -36,8 +36,6 @@ if [ "$IS_SOURCE" != *"easy-clone/auto-complete.sh"* ]; then
         echo "source ${HOME}/easy-clone/auto-complete.sh" >> ${HOME}/.bashrc
     fi
 fi
-source ~/.bashrc
-
 
 echo 
 echo
@@ -48,6 +46,7 @@ echo "########## $SCRIPT_NAME installed to the current directory  ##########"
 echo
 echo ">> To finish the install, do:"
 echo " $ sudo mv $SCRIPT_NAME /usr/local/bin/"
+echo " $ source ~/.bashrc"
 exit 0
 
 #

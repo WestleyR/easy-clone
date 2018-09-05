@@ -3,7 +3,7 @@
 # Created by: Westley K
 # email: westley@sylabs.io
 # Date: Sep 5, 2018
-# version-1.0.0
+# version-1.0.1
 #
 # MIT License
 #
@@ -33,7 +33,7 @@ set -e
 SCRIPT_NAME="hubget"
 URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/hubget"
 
-echo "update script version: version-1.0.0"
+echo "update script version: version-1.0.1"
 echo "update script date: Sep 5, 2018"
 echo
 
@@ -41,6 +41,8 @@ echo
 rm -f $SCRIPT_NAME
 
 curl $URL > $SCRIPT_NAME
+
+chmod +x $SCRIPT_NAME
 
 echo 
 echo

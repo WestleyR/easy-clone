@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# Date: Aug 9, 2018
-# version-1.0.6
+# version-1.0.9
+# Date: Sep 4, 2018
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -28,45 +28,91 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+#
 
-VERSION_HUBGET="version-1.0.6"
-HUBGET_DATE="Aug 9, 2018"
+set -e
+
+VERSION_HUBGET="version-1.0.9"
+HUBGET_DATE="Sep 4, 2018"
+
+ZIP_FILE="master.zip"
+
+help_menu() {
+    echo "Usage: hubget [OPTION] [USRNAME/REPO_NAME]"
+    echo "      -h | -help | --help (print help menu)"
+    echo "      -k | -keep_zip (keep the downloaded zip file)"
+    echo "      -v | -version | --version (print script version)"
+    echo "source code: https://github.con/WestleyK/easy-clone"
+    exit 0
+}
+
+print_version() {
+    echo $VERSION_HUBGET
+    echo $HUBGET_DATE
+    echo "Source code: https://github.com/WestleyK/easy-clone"
+    exit 0
+}
 
 source ~/easy-clone/auto-complete.sh
 
-REPO=$1
-if [ -z $REPO ]; then
-	echo "Usage: hubget [USRNAME/REPO]"
-	exit
+if [ -z $1 ]; then
+    help_menu
 fi
-if [[ $REPO == "-h" || $REPO == "-help" || $REPO == "--help" ]]; then
-	echo "Usage: hubget [USRNAME/RPEO]"
-	exit
-elif [[ $REPO == "-v" || $REPO == "-version" || $REPO == "--version" ]]; then
-	echo $VERSION_HUBGET
-	echo $HUBGET_DATE
-	echo "Source code: https://github.com/WestleyK/easy-clone"
-	exit
-fi
-URL="$( echo "https://github.com/"$REPO )"
-git ls-remote $URL
-echo $URL
-sleep 0.1s
-echo "cloning repo"
-sleep 0.25s
 
-git clone $URL
+
+if [ ! -z $2 ]; then
+    OPTION=$1
+    REPO=$2
+else
+    REPO=$1
+    OPTION=$1
+fi
+
+
+if [ "$OPTION" == "-h" ] || [ "$OPTION" == "-help" ] || [ "$OPTION" == "--help" ]; then
+    help_menu
+elif [ "$OPTION" == "-k" ] || [ "$OPTION" == "-keep_zip" ]; then
+    KEEP_ZIP="true"
+elif [ "$OPTION" == "-v" ] || [ "$OPTION" == "-version" ] || [ "$OPTION" == "--version" ]; then
+    print_version
+fi
+
+NAME=` echo $REPO | rev | cut -f1 -d"/" | rev `
+echo "Repo name: '$NAME'"
+
+if [ -d $NAME ]; then
+    echo "FATAL ERROR:"
+    echo "'$NAME'  already exist!"
+    exit 1
+fi
+
+if [ -f $ZIP_FILE ]; then
+    echo "FATAL ERROR:"
+    echo "'$ZIP_FILE'  already exist!"
+    exit 1
+fi
+
+echo "Cloning repo..."
+wget https://github.com/$REPO/archive/master.zip
+
+unzip $ZIP_FILE
+mv $NAME-master $NAME
+
+if [ "$KEEP_ZIP" != "true" ]; then
+    echo "Removing: '$ZIP_FILE'  because no '-k' or '-keep_zip' flag was specified."
+    rm -f $ZIP_FILE
+fi
 
 IS_FILE="$( cat ~/easy-clone/option-url.txt | grep $REPO )"
-if [[ -z $IS_FILE ]]; then
-	echo $REPO >> ~/easy-clone/option-url.txt
+if [ -z $IS_FILE ]; then
+    echo $REPO >> ~/easy-clone/option-url.txt
 fi
 
 echo "Done."
+
+exit 0
 
 
 #
 # End script
 #
-
-

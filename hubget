@@ -2,7 +2,7 @@
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.1.3
+# version-1.1.4
 # Date: Sep 6, 2018
 # https://github.com/WestleyK/easy-clone
 #
@@ -32,7 +32,7 @@
 
 set -e
 
-VERSION_HUBGET="version-1.1.3"
+VERSION_HUBGET="version-1.1.4"
 HUBGET_DATE="Sep 6, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
@@ -43,6 +43,7 @@ UP_URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/script-vers
 help_menu() {
     echo "Usage: hubget [OPTION] [USRNAME/REPO_NAME]"
     echo "      -h | -help | --help (print help menu)"
+    echo "      -c | -check (check for update)"
     echo "      -nu | -no_update (don't check for updates)"
     echo "      -c | -clear (clear debug file: $BUG_FILE)"
     echo "      -v | -version | --version (print script version)"
@@ -66,6 +67,35 @@ debug_output() {
     echo $DATE_RUN >> $BUG_FILE
     echo "expecting: $ERROR_EX" >> $BUG_FILE
     echo "actral: $ERROR_BUG" >> $BUG_FILE
+}
+
+check_update() {
+    echo "Checking for update..."
+    NEW_V=` curl $UP_URL `
+    if [ "$NEW_V" != "version"* ]; then
+        ERROR_EX="version*"
+        ERROR_BUG=$NEW_V
+        debug_output
+        echo "ERROR: an error has occurred"
+        echo "Unable to check for update."
+        echo 
+        echo "FAIL: check for update failed!"
+        echo "Try: "
+        echo ">> $ cat $BUG_FILE  (for debug)"
+        exit 1
+    fi
+    if [ "$NEW_V" != "$VERSION_HUBGET" ]; then
+        echo "INFO: An update is avalable,"
+        echo "Your hubget version: $VERSION_HUBGET"
+        echo "New version: $NEW_V"
+        echo "Do: "
+        echo ">> $ cd ~/easy-clone/  (or wherever it is)"
+        echo ">> $ ./update.sh  (to update hubget)"
+        exit 0
+    else
+        echo "INFO: hubget is at latest version: $NEW_V"
+    fi
+	exit 0
 }
 
 clear_bug() {
@@ -92,6 +122,8 @@ fi
 
 if [ "$OPTION" == "-h" ] || [ "$OPTION" == "-help" ] || [ "$OPTION" == "--help" ]; then
     help_menu
+elif [ "$OPTION" == "-h" ] || [ "$OPTION" == "-help" ]; then
+    check_update
 elif [ "$OPTION" == "-nu" ] || [ "$OPTION" == "-no_update" ]; then
     NO_UP="true"
 elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "-clear" ]; then
@@ -134,31 +166,8 @@ fi
 
 if [ "$NO_UP" != "true" ]; then
     echo "Checking for update, because no '-nu' or '-no_update' flag was specified."
-    echo "Checking for update..."
-    NEW_V=` curl $UP_URL `
-    if [ "$NEW_V" != "version"* ]; then
-        ERROR_EX="version*"
-        ERROR_BUG=$NEW_V
-        debug_output
-        echo "ERROR: an error has occurred"
-        echo "Unable to check for update."
-        echo 
-        echo "FAIL: check for update failed!"
-        echo "Try: "
-        echo ">> $ cat $BUG_FILE  (for debug)"
-        exit 1
-    fi
-    if [ "$NEW_V" != "$VERSION_HUBGET" ]; then
-        echo "INFO: An update is avalable,"
-        echo "Your hubget version: $VERSION_HUBGET"
-        echo "New version: $NEW_V"
-        echo "Do: "
-	echo ">> $ cd ~/easy-clone/  (or wherever it is)"
-        echo ">> $ ./update.sh  (to update hubget)"
-        exit 0
-    else
-        echo "INFO: hubget is at latest version: $NEW_V"
-    fi
+    check_update
+    exit 0
 fi
 
 echo "Done."

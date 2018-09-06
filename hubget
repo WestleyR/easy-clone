@@ -2,7 +2,7 @@
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.1.5
+# version-1.1.6
 # Date: Sep 6, 2018
 # https://github.com/WestleyK/easy-clone
 #
@@ -32,7 +32,7 @@
 
 set -e
 
-VERSION_HUBGET="version-1.1.5"
+VERSION_HUBGET="version-1.1.6"
 HUBGET_DATE="Sep 6, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
@@ -72,7 +72,7 @@ debug_output() {
 check_update() {
     echo "Checking for update..."
     NEW_V=` curl $UP_URL `
-    if [ "$NEW_V" != "version"* ]; then
+    if [[ "$NEW_V" != "version"* ]]; then
         ERROR_EX="version*"
         ERROR_BUG=$NEW_V
         debug_output
@@ -84,7 +84,7 @@ check_update() {
         echo ">> $ cat $BUG_FILE  (for debug)"
         exit 1
     fi
-    if [ "$NEW_V" != "$VERSION_HUBGET" ]; then
+    if [[ "$NEW_V" != "$VERSION_HUBGET" ]]; then
         echo "INFO: An update is avalable,"
         echo "Your hubget version: $VERSION_HUBGET"
         echo "New version: $NEW_V"

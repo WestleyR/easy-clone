@@ -2,7 +2,7 @@
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.1.2
+# version-1.1.3
 # Date: Sep 6, 2018
 # https://github.com/WestleyK/easy-clone
 #
@@ -32,7 +32,7 @@
 
 set -e
 
-VERSION_HUBGET="version-1.1.2"
+VERSION_HUBGET="version-1.1.3"
 HUBGET_DATE="Sep 6, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
@@ -118,7 +118,8 @@ fi
 echo "Cloning repo..."
 URL="$( echo "https://github.com/"$REPO )"
 
-wget O- $URL
+wget -O /tmp/output_hubget_url_test.txt $URL
+rm -f /tmp/output_hubget_url_test.txt
 
 git clone $URL
 
@@ -147,13 +148,16 @@ if [ "$NO_UP" != "true" ]; then
         echo ">> $ cat $BUG_FILE  (for debug)"
         exit 1
     fi
-    if [ "$NEW_V" != "VERSION_HUBGET" ]; then
+    if [ "$NEW_V" != "$VERSION_HUBGET" ]; then
         echo "INFO: An update is avalable,"
         echo "Your hubget version: $VERSION_HUBGET"
         echo "New version: $NEW_V"
         echo "Do: "
+	echo ">> $ cd ~/easy-clone/  (or wherever it is)"
         echo ">> $ ./update.sh  (to update hubget)"
         exit 0
+    else
+        echo "INFO: hubget is at latest version: $NEW_V"
     fi
 fi
 

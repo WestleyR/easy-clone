@@ -2,7 +2,7 @@
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.1.6
+# version-1.1.7
 # Date: Sep 6, 2018
 # https://github.com/WestleyK/easy-clone
 #
@@ -32,7 +32,7 @@
 
 set -e
 
-VERSION_HUBGET="version-1.1.6"
+VERSION_HUBGET="version-1.1.7"
 HUBGET_DATE="Sep 6, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
@@ -45,7 +45,7 @@ help_menu() {
     echo "      -h | -help | --help (print help menu)"
     echo "      -c | -check (check for update)"
     echo "      -nu | -no_update (don't check for updates)"
-    echo "      -c | -clear (clear debug file: $BUG_FILE)"
+    echo "      -clearbug | -clear_bug (clear debug file: $BUG_FILE)"
     echo "      -v | -version | --version (print script version)"
     echo "source code: https://github.con/WestleyK/easy-clone"
     exit 0
@@ -122,11 +122,11 @@ fi
 
 if [ "$OPTION" == "-h" ] || [ "$OPTION" == "-help" ] || [ "$OPTION" == "--help" ]; then
     help_menu
-elif [ "$OPTION" == "-h" ] || [ "$OPTION" == "-help" ]; then
+elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "-check" ]; then
     check_update
 elif [ "$OPTION" == "-nu" ] || [ "$OPTION" == "-no_update" ]; then
     NO_UP="true"
-elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "-clear" ]; then
+elif [ "$OPTION" == "-clearbug" ] || [ "$OPTION" == "-clear_bug" ]; then
     clear_bug
 elif [ "$OPTION" == "-v" ] || [ "$OPTION" == "-version" ] || [ "$OPTION" == "--version" ]; then
     print_version

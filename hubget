@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.0.9
-# Date: Sep 4, 2018
+# version-1.1.1
+# Date: Sep 5, 2018
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -32,8 +32,8 @@
 
 set -e
 
-VERSION_HUBGET="version-1.0.9"
-HUBGET_DATE="Sep 4, 2018"
+VERSION_HUBGET="version-1.1.1"
+HUBGET_DATE="Sep 5, 2018"
 
 ZIP_FILE="master.zip"
 
@@ -103,8 +103,9 @@ if [ "$KEEP_ZIP" != "true" ]; then
     rm -f $ZIP_FILE
 fi
 
-IS_FILE="$( cat ~/easy-clone/option-url.txt | grep $REPO )"
-if [ -z $IS_FILE ]; then
+IS_FILE=` cat ~/easy-clone/option-url.txt `
+if [ "$IS_FILE" != "$REPO" ]; then
+    echo "Adding $REPO to: ~/easy-clone/option-url.txt"
     echo $REPO >> ~/easy-clone/option-url.txt
 fi
 

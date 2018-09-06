@@ -2,8 +2,8 @@
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.1.1
-# Date: Sep 5, 2018
+# version-1.1.2
+# Date: Sep 6, 2018
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -32,15 +32,19 @@
 
 set -e
 
-VERSION_HUBGET="version-1.1.1"
-HUBGET_DATE="Sep 5, 2018"
+VERSION_HUBGET="version-1.1.2"
+HUBGET_DATE="Sep 6, 2018"
 
-ZIP_FILE="master.zip"
+BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
+
+UP_URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/script-version.txt"
+#ZIP_FILE="master.zip"
 
 help_menu() {
     echo "Usage: hubget [OPTION] [USRNAME/REPO_NAME]"
     echo "      -h | -help | --help (print help menu)"
-    echo "      -k | -keep_zip (keep the downloaded zip file)"
+    echo "      -nu | -no_update (don't check for updates)"
+    echo "      -c | -clear (clear debug file: $BUG_FILE)"
     echo "      -v | -version | --version (print script version)"
     echo "source code: https://github.con/WestleyK/easy-clone"
     exit 0
@@ -51,6 +55,23 @@ print_version() {
     echo $HUBGET_DATE
     echo "Source code: https://github.com/WestleyK/easy-clone"
     exit 0
+}
+
+debug_output() {
+    DATE_RUN=` date `
+    echo "" >> $BUG_FILE
+    echo "" >> $BUG_FILE
+    echo "" >> $BUG_FILE
+    echo "" >> $BUG_FILE
+    echo $DATE_RUN >> $BUG_FILE
+    echo "expecting: $ERROR_EX" >> $BUG_FILE
+    echo "actral: $ERROR_BUG" >> $BUG_FILE
+}
+
+clear_bug() {
+	cat /dev/null > $BUG_FILE
+	echo "File cleared: $BUG_FILE"
+	exit 0
 }
 
 source ~/easy-clone/auto-complete.sh
@@ -71,8 +92,10 @@ fi
 
 if [ "$OPTION" == "-h" ] || [ "$OPTION" == "-help" ] || [ "$OPTION" == "--help" ]; then
     help_menu
-elif [ "$OPTION" == "-k" ] || [ "$OPTION" == "-keep_zip" ]; then
-    KEEP_ZIP="true"
+elif [ "$OPTION" == "-nu" ] || [ "$OPTION" == "-no_update" ]; then
+    NO_UP="true"
+elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "-clear" ]; then
+    clear_bug
 elif [ "$OPTION" == "-v" ] || [ "$OPTION" == "-version" ] || [ "$OPTION" == "--version" ]; then
     print_version
 fi
@@ -86,27 +109,52 @@ if [ -d $NAME ]; then
     exit 1
 fi
 
-if [ -f $ZIP_FILE ]; then
-    echo "FATAL ERROR:"
-    echo "'$ZIP_FILE'  already exist!"
-    exit 1
-fi
+#if [ -f $ZIP_FILE ]; then
+#    echo "FATAL ERROR:"
+#    echo "'$ZIP_FILE'  already exist!"
+#    exit 1
+#fi
 
 echo "Cloning repo..."
-wget https://github.com/$REPO/archive/master.zip
+URL="$( echo "https://github.com/"$REPO )"
 
-unzip $ZIP_FILE
-mv $NAME-master $NAME
+wget O- $URL
 
-if [ "$KEEP_ZIP" != "true" ]; then
-    echo "Removing: '$ZIP_FILE'  because no '-k' or '-keep_zip' flag was specified."
-    rm -f $ZIP_FILE
-fi
+git clone $URL
+
+#unzip $ZIP_FILE
+#mv $NAME-master $NAME
 
 IS_FILE=` cat ~/easy-clone/option-url.txt `
 if [ "$IS_FILE" != "$REPO" ]; then
     echo "Adding $REPO to: ~/easy-clone/option-url.txt"
     echo $REPO >> ~/easy-clone/option-url.txt
+fi
+
+if [ "$NO_UP" != "true" ]; then
+    echo "Checking for update, because no '-nu' or '-no_update' flag was specified."
+    echo "Checking for update..."
+    NEW_V=` curl $UP_URL `
+    if [ "$NEW_V" != "version"* ]; then
+        ERROR_EX="version*"
+        ERROR_BUG=$NEW_V
+        debug_output
+        echo "ERROR: an error has occurred"
+        echo "Unable to check for update."
+        echo 
+        echo "FAIL: check for update failed!"
+        echo "Try: "
+        echo ">> $ cat $BUG_FILE  (for debug)"
+        exit 1
+    fi
+    if [ "$NEW_V" != "VERSION_HUBGET" ]; then
+        echo "INFO: An update is avalable,"
+        echo "Your hubget version: $VERSION_HUBGET"
+        echo "New version: $NEW_V"
+        echo "Do: "
+        echo ">> $ ./update.sh  (to update hubget)"
+        exit 0
+    fi
 fi
 
 echo "Done."

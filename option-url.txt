@@ -1,4 +1,5 @@
 WestleyK/rpi-brightness
+WestleyK/rpi-backlight
 WestleyK/pi-backlight
 WestleyK/easy-clone
 WestleyK/drive-mount

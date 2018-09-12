@@ -1,7 +1,7 @@
 #!/bin/bash
 # created by: WestleyK
 # date: Sep 12, 2018
-# version-1.0.1
+# version-1.0.2
 # https://github.com/WestleyK/easy-clone
 #
 # MIT Licence

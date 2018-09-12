@@ -1,7 +1,7 @@
 #!/bin/bash
 # created by: WestleyK
 # date: Sep 12, 2018
-# version-1.0.0
+# version-1.0.1
 # https://github.com/WestleyK/easy-clone
 #
 # MIT Licence
@@ -47,7 +47,7 @@ cat <<_FILE > $FUNC_FILE
 
 hubget() {
 
-    ~/easy-clone/./hubget $1 $2 $3
+    ~/easy-clone/./hubget \$1 \$2 \$3
 
 }
 

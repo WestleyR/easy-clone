@@ -9,3 +9,4 @@ WestleyK/drive-speed-test
 WestleyK/ssh-watcher
 singularityware/singularity.git
 golang/dep
+WestleyK/rpi-brightness

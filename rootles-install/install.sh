@@ -47,7 +47,7 @@ cat <<_FILE > $FUNC_FILE
 
 hubget() {
 
-    ~/./hubget $1 $2 $3
+    ~/easy-clone/./hubget $1 $2 $3
 
 }
 

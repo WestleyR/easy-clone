@@ -2,8 +2,8 @@
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.1.8
-# Date: Sep 12, 2018
+# version-1.1.9
+# Date: Sep 13, 2018
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -32,8 +32,8 @@
 
 set -e
 
-VERSION_HUBGET="version-1.1.8"
-HUBGET_DATE="Sep 12, 2018"
+VERSION_HUBGET="version-1.1.9"
+HUBGET_DATE="Sep 13, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
 
@@ -43,7 +43,7 @@ UP_URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/script-vers
 help_menu() {
     echo "Usage: hubget [OPTION] [USRNAME/REPO_NAME]"
     echo "      -h | -help | --help (print help menu)"
-    echo "      -c | -check (check for update)"
+    echo "      -c | -check | -checkupdate (check for update)"
     echo "      -nu | -no_update (don't check for updates)"
     echo "      -clearbug | -clear_bug (clear debug file: $BUG_FILE)"
     echo "      -v | -version | --version (print script version)"
@@ -69,36 +69,52 @@ debug_output() {
     echo "actral: $ERROR_BUG" >> $BUG_FILE
 }
 
+only_one_arg() {
+    if [ -z $2 ]; then
+        echo "ERROR: $OPTION flag only needs one argument!"
+        echo " eg. >> $ hubget $OPTION"
+        exit 1
+    fi
+}
+
 check_update() {
+    only_one_arg
     echo "Checking for update..."
-    NEW_V=` curl $UP_URL `
+    NEW_V=` curl -s $UP_URL `
     if [[ "$NEW_V" != "version"* ]]; then
         ERROR_EX="version*"
         ERROR_BUG=$NEW_V
         debug_output
-        echo "ERROR: an error has occurred"
+        echo ">>ERROR: an error has occurred"
         echo "Unable to check for update."
         echo 
-        echo "FAIL: check for update failed!"
+        echo ">>FAIL: check for update failed!"
         echo "Try: "
         echo ">> $ cat $BUG_FILE  (for debug)"
         exit 1
     fi
     if [[ "$NEW_V" != "$VERSION_HUBGET" ]]; then
-        echo "INFO: An update is avalable,"
+        echo ">>INFO: An update is avalable,"
         echo "Your hubget version: $VERSION_HUBGET"
         echo "New version: $NEW_V"
         echo "Do: "
-        echo ">> $ cd ~/easy-clone/  (or wherever it is)"
-        echo ">> $ ./update.sh  (to update hubget)"
+        echo " >> $ cd ~/easy-clone/  (or wherever it is)"
+        echo " >> $ ./update.sh  (to update hubget)"
         exit 0
     else
-        echo "INFO: hubget is at latest version: $NEW_V"
+        echo ">>INFO: hubget is at latest version: $NEW_V"
     fi
 	exit 0
 }
 
 clear_bug() {
+    only_one_arg
+    echo "Clearing: $BUG_FILE"
+    if [ ! -f $BUG_FILE ]; then
+        echo "ERROR: $BUG_FILE does not exist!"
+        echo " no bugs reported yet."
+        exit 1
+    fi
 	cat /dev/null > $BUG_FILE
 	echo "File cleared: $BUG_FILE"
 	exit 0
@@ -119,17 +135,37 @@ else
     OPTION=$1
 fi
 
+check_arg() {
+    if [ "$OPTION" == "-h" ] || [ "$OPTION" == "-help" ] || [ "$OPTION" == "--help" ]; then
+        help_menu
+        return
+    elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "-check" ] || [ "$OPTION" == "-checkupdate" ]; then
+        check_update
+        return
+    elif [ "$OPTION" == "-nu" ] || [ "$OPTION" == "-no_update" ]; then
+        NO_UP="true"
+        return
+    elif [ "$OPTION" == "-clearbug" ] || [ "$OPTION" == "-clear_bug" ]; then
+        clear_bug
+        return
+    elif [ "$OPTION" == "-v" ] || [ "$OPTION" == "-version" ] || [ "$OPTION" == "--version" ]; then
+        print_version
+        return
+    elif [[ "$OPTION" == "-"* ]]; then
+        echo "Option not found! :P  $OPTION"
+        exit 1
+    fi
+}
 
-if [ "$OPTION" == "-h" ] || [ "$OPTION" == "-help" ] || [ "$OPTION" == "--help" ]; then
-    help_menu
-elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "-check" ]; then
-    check_update
-elif [ "$OPTION" == "-nu" ] || [ "$OPTION" == "-no_update" ]; then
-    NO_UP="true"
-elif [ "$OPTION" == "-clearbug" ] || [ "$OPTION" == "-clear_bug" ]; then
-    clear_bug
-elif [ "$OPTION" == "-v" ] || [ "$OPTION" == "-version" ] || [ "$OPTION" == "--version" ]; then
-    print_version
+check_arg
+
+if [ "$NO_UP" == "true" ]; then
+    if [ -z $2 ]; then
+        echo "ERROR: $OPTION flag needs at least two arguments!"
+        echo " only revived one!"
+        echo " eg. >> $ hubget $OPTION WestleyK/easy-clone"
+        exit 1
+    fi
 fi
 
 NAME=` echo $REPO | rev | cut -f1 -d"/" | rev `

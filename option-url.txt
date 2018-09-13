@@ -1,3 +1,16 @@
+-h
+-help
+--help
+-c
+-check
+-check_update
+-nu
+-no_update
+-clearbug
+-clear_bug
+-v
+-version
+--version
 WestleyK/rpi-brightness
 WestleyK/rpi-backlight
 WestleyK/pi-backlight

@@ -43,7 +43,7 @@ UP_URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/script-vers
 help_menu() {
     echo "Usage: hubget [OPTION] [USRNAME/REPO_NAME]"
     echo "      -h | -help | --help (print help menu)"
-    echo "      -c | -check | -checkupdate (check for update)"
+    echo "      -c | -check | -check_update (check for update)"
     echo "      -nu | -no_update (don't check for updates)"
     echo "      -clearbug | -clear_bug (clear debug file: $BUG_FILE)"
     echo "      -v | -version | --version (print script version)"
@@ -139,7 +139,7 @@ check_arg() {
     if [ "$OPTION" == "-h" ] || [ "$OPTION" == "-help" ] || [ "$OPTION" == "--help" ]; then
         help_menu
         return
-    elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "-check" ] || [ "$OPTION" == "-checkupdate" ]; then
+    elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "-check" ] || [ "$OPTION" == "-check_update" ]; then
         check_update
         return
     elif [ "$OPTION" == "-nu" ] || [ "$OPTION" == "-no_update" ]; then

@@ -2,8 +2,8 @@
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.1.9
-# Date: Sep 13, 2018
+# version-1.2.0
+# Date: Sep 22, 2018
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -32,8 +32,8 @@
 
 set -e
 
-VERSION_HUBGET="version-1.1.9"
-HUBGET_DATE="Sep 13, 2018"
+VERSION_HUBGET="version-1.2.0"
+HUBGET_DATE="Sep 22, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
 
@@ -70,7 +70,7 @@ debug_output() {
 }
 
 only_one_arg() {
-    if [ -z $2 ]; then
+    if [ ! -n $2 ]; then
         echo "ERROR: $OPTION flag only needs one argument!"
         echo " eg. >> $ hubget $OPTION"
         exit 1

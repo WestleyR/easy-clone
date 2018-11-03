@@ -2,8 +2,8 @@
 #
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.2.1
-# Date: Sep 22, 2018
+# version-1.2.2
+# Date: Nov 3, 2018
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -32,8 +32,8 @@
 
 set -e
 
-VERSION_HUBGET="version-1.2.1"
-HUBGET_DATE="Sep 22, 2018"
+VERSION_HUBGET="version-1.2.2"
+HUBGET_DATE="Nov 3, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
 
@@ -186,7 +186,7 @@ fi
 echo "Cloning repo..."
 URL="$( echo "https://github.com/"$REPO )"
 
-wget -O /tmp/output_hubget_url_test.txt $URL
+wget -q -O /tmp/output_hubget_url_test.txt $URL
 rm -f /tmp/output_hubget_url_test.txt
 
 git clone $URL

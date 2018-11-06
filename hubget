@@ -1,8 +1,8 @@
 #!/bin/bash
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.3.1
-# Date: Nov 3, 2018
+# version-1.3.2
+# Date: Nov 5, 2018
 # https://github.com/WestleyK/easy-clone
 #
 #
@@ -31,8 +31,8 @@
 
 set -e
 
-VERSION_HUBGET="version-1.3.1"
-HUBGET_DATE="Nov 3, 2018"
+VERSION_HUBGET="version-1.3.2"
+HUBGET_DATE="Nov 5, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
 
@@ -47,12 +47,12 @@ if ! [ -x "$(command -v ecgo)" ]; then
 fi
 
 help_menu() {
-    ecgo -n -white "usage: " && ecgo -n -green "$0" && ecgo -blue " [OPTION] [USRNAME/REPO_NAME]"
-    ecgo -n -yello "      -h, -help, --help           " && ecgo -teal ": print help menu."
-    ecgo -n -yello "      -c, -check, -check_update   " && ecgo -teal ": check for update."
-    ecgo -n -yello "      -nu, -no_update             " && ecgo -teal ": don't check for updates."
-    ecgo -n -yello "      -clearbug, -clear_bug       " && ecgo -teal ": clear debug file: $BUG_FILE."
-    ecgo -n -yello "      -v, -version, --version     " && ecgo -teal ": print script version."
+    ecgo -white "usage: " -green "$0" -blue " [OPTION] [USRNAME/REPO_NAME]"
+    ecgo -yello "      -h, -help, --help           " -teal ": print help menu."
+    ecgo -yello "      -c, -check, -check_update   " -teal ": check for update."
+    ecgo -yello "      -nu, -no_update             " -teal ": don't check for updates."
+    ecgo -yello "      -clearbug, -clear_bug       " -teal ": clear debug file: $BUG_FILE."
+    ecgo -yello "      -v, -version, --version     " -teal ": print script version."
     ecgo -white "source code: https://github.con/WestleyK/easy-clone"
     exit 0
 }

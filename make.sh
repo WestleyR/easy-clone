@@ -3,7 +3,7 @@
 # Created by: Westley K
 # email: westley@sylabs.io
 # Date: Nov 10, 2018
-# version-1.0.9
+# version-1.1.0
 #
 # MIT License
 #
@@ -33,7 +33,7 @@ SCRIPT_NAME="hubget"
 PATH_INSTALL="/usr/local/bin/"
 IS_ROOT="$( id -u )"
 MAN_LOCATION="man/man1/hubget.1.gz"
-MAN_PATH="/usr/shared/man/man1/"
+MAN_PATH="/usr/share/man/man1/"
 
 help_menu() {
     echo "Usage: $0 [OPTION]"

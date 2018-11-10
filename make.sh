@@ -2,8 +2,8 @@
 #
 # Created by: Westley K
 # email: westley@sylabs.io
-# Date: Sep 4, 2018
-# version-1.0.8
+# Date: Nov 10, 2018
+# version-1.0.9
 #
 # MIT License
 #
@@ -32,14 +32,15 @@ OPTION=$1
 SCRIPT_NAME="hubget"
 PATH_INSTALL="/usr/local/bin/"
 IS_ROOT="$( id -u )"
-
+MAN_LOCATION="man/man1/hubget.1.gz"
+MAN_PATH="/usr/shared/man/man1/"
 
 help_menu() {
-    echo "Usage: ./make.sh [OPTION]"
-    echo "      help (print help menu)"
-    echo "      install (install script)"
-    echo "      update (update script and repo)"
-    echo "      uninstall (uninstall script)"
+    echo "Usage: $0 [OPTION]"
+    echo "      help       : print help menu"
+    echo "      install    : install script"
+    echo "      update     : update script and repo"
+    echo "      uninstall  : uninstall script"
     echo "source code: https://github.com/WestleyK/easy-clone"
 	exit 0
 }
@@ -89,6 +90,8 @@ install_now() {
     script_source
     source $USR_HOME/.bashrc
     echo $SCRIPT_NAME "is installed to" $PATH_INSTALL
+    echo "installing manpage..."
+    cp $MAN_LOCATION $MAN_PATH
     echo "Done."
     exit 0
 }
@@ -150,9 +153,9 @@ fi
 if [[ -z $OPTION ]]; then
     if [ $IS_ROOT != 0 ]; then
         echo ${HOME} > home-dir.txt
-        touch install
-        touch update
-        touch uninstall
+#        touch install
+#        touch update
+#        touch uninstall
         echo "do:"
         echo "  $ sudo ./make.sh install"
         exit 0
@@ -167,5 +170,4 @@ fi
 #
 # End install script
 #
-
 

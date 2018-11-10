@@ -2,8 +2,8 @@
 #
 # Created by: Westley K
 # email: westley@sylabs.io
-# Date: Sep 5, 2018
-# version-1.0.2
+# Date: Nov 10, 2018
+# version-1.0.3
 #
 # MIT License
 #
@@ -32,17 +32,22 @@ set -e
 
 SCRIPT_NAME="hubget"
 URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/hubget"
+MAN_NAME="man/man1/hubget.1.gz"
+MAN_URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/man/man1/hubget.1.gz"
 
-echo "update script version: version-1.0.2"
-echo "update script date: Sep 5, 2018"
+echo "update script version: version-1.0.3"
+echo "update script date: Nov 10, 2018"
 echo
 
 
 rm -f $SCRIPT_NAME
-
+echo "Downloading script..."
 curl $URL > $SCRIPT_NAME
-
 chmod +x $SCRIPT_NAME
+echo "Done."
+
+echo "Downloading manpage..."
+wget -O $MAN_NAME $MAN_URL
 
 echo 
 echo
@@ -52,7 +57,7 @@ echo
 echo "########## $SCRIPT_NAME is updated  ##########"
 echo
 echo ">> To finish the update, do:"
-echo " $ sudo cp $SCRIPT_NAME /usr/local/bin/"
+echo " $ sudo ./make.sh install"
 
 exit 0
 

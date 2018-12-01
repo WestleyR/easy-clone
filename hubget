@@ -36,6 +36,8 @@ help_menu() {
     ecgo -yellow "      -nu, -no_update             " -teal ": don't check for updates."
     ecgo -yellow "      -clearbug, -clear_bug       " -teal ": clear debug file: $BUG_FILE."
     ecgo -yellow "      -v, -version, --version     " -teal ": print script version."
+    ecgo
+    ecgo "This software is licensed under a Clear BSD License."
     ecgo -white "source code: https://github.con/WestleyK/easy-clone"
     exit 0
 }

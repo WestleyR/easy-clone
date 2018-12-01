@@ -15,7 +15,8 @@
 
 set -e
 
-VERSION_HUBGET="version-1.3.3, Nov 30, 2018"
+VERSION_HUBGET="version-1.3.4"
+DATE_HUBGET="Nov 30, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
 
@@ -43,7 +44,7 @@ help_menu() {
 }
 
 print_version() {
-    ecgo -teal $VERSION_HUBGET
+    ecgo -teal -a "${VERSION_HUBGET}, ${DATE_HUBGET}"
     exit 0
 }
 

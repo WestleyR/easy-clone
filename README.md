@@ -6,14 +6,12 @@
 
 ## Install:
 
-<br>
-
-### Quick and easy install:
-
-Paste or type this in your terminal:
 ```
-curl https://raw.githubusercontent.com/WestleyK/easy-clone/master/easy-install.sh | sh
-sudo mv hubget /usr/local/bin/
+cd ~/
+git clone https://github.com/WestleyK/easy-clone.git
+cd easy-clone/
+./make.sh
+sudo ./make.sh install
 source ~/.bashrc
 ```
 
@@ -34,18 +32,6 @@ If you don't, then try to close then reopen the terminal and it should work now.
 If it still doesn't work, then please open an issue.
 
 <br>
-<br>
-
-### Install by cloning repo:
-
-```
-cd ~/
-git clone https://github.com/WestleyK/easy-clone.git
-cd easy-clone/
-./make.sh
-sudo ./make.sh install
-source ~/.bashrc
-```
 <br>
 
 ## Usage:

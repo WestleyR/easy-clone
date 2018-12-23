@@ -1,123 +1,113 @@
 #!/bin/bash
-#
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.1.9
-# Date: Sep 13, 2018
+# version-1.3.3
+# Date: Nov 30, 2018
 # https://github.com/WestleyK/easy-clone
 #
-#
-# MIT License
+# The Clear BSD License
 #
 # Copyright (c) 2018 WestleyK
+# All rights reserved.
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# This software is licensed under a Clear BSD License.
 #
 
 set -e
 
-VERSION_HUBGET="version-1.1.9"
-HUBGET_DATE="Sep 13, 2018"
+VERSION_HUBGET="version-1.3.4"
+DATE_HUBGET="Nov 30, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
 
 UP_URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/script-version.txt"
 #ZIP_FILE="master.zip"
 
+if ! [ -x "$(command -v ecgo)" ]; then
+    echo "ERROR: need: ecgo"
+    echo "please install ecgo"
+    echo "https://github.com/WestleyK/ecgo"
+    exit 1        
+fi
+
 help_menu() {
-    echo "Usage: hubget [OPTION] [USRNAME/REPO_NAME]"
-    echo "      -h | -help | --help (print help menu)"
-    echo "      -c | -check | -check_update (check for update)"
-    echo "      -nu | -no_update (don't check for updates)"
-    echo "      -clearbug | -clear_bug (clear debug file: $BUG_FILE)"
-    echo "      -v | -version | --version (print script version)"
-    echo "source code: https://github.con/WestleyK/easy-clone"
+    ecgo -white "usage: " -green "$0" -blue " [OPTION] [USRNAME/REPO_NAME]"
+    ecgo -yellow "      -h, -help, --help           " -teal ": print help menu."
+    ecgo -yellow "      -c, -check, -check_update   " -teal ": check for update."
+    ecgo -yellow "      -nu, -no_update             " -teal ": don't check for updates."
+    ecgo -yellow "      -clearbug, -clear_bug       " -teal ": clear debug file: $BUG_FILE."
+    ecgo -yellow "      -v, -version, --version     " -teal ": print script version."
+    ecgo
+    ecgo "This software is licensed under a Clear BSD License."
+    ecgo -white "source code: https://github.con/WestleyK/easy-clone"
     exit 0
 }
 
 print_version() {
-    echo $VERSION_HUBGET
-    echo $HUBGET_DATE
-    echo "Source code: https://github.com/WestleyK/easy-clone"
+    ecgo -teal -a "${VERSION_HUBGET}, ${DATE_HUBGET}"
     exit 0
 }
 
 debug_output() {
     DATE_RUN=` date `
-    echo "" >> $BUG_FILE
-    echo "" >> $BUG_FILE
-    echo "" >> $BUG_FILE
-    echo "" >> $BUG_FILE
-    echo $DATE_RUN >> $BUG_FILE
-    echo "expecting: $ERROR_EX" >> $BUG_FILE
-    echo "actral: $ERROR_BUG" >> $BUG_FILE
+    ecgo "" >> $BUG_FILE
+    ecgo "" >> $BUG_FILE
+    ecgo "" >> $BUG_FILE
+    ecgo "" >> $BUG_FILE
+    ecgo $DATE_RUN >> $BUG_FILE
+    ecgo "expecting: $ERROR_EX" >> $BUG_FILE
+    ecgo "actral: $ERROR_BUG" >> $BUG_FILE
 }
 
 only_one_arg() {
-    if [ -z $2 ]; then
-        echo "ERROR: $OPTION flag only needs one argument!"
-        echo " eg. >> $ hubget $OPTION"
+    if [ ! -n $2 ]; then
+        ecgo -red "ERROR: $OPTION flag only needs one argument!"
+        ecgo -red " eg. >> $ hubget $OPTION"
         exit 1
     fi
 }
 
 check_update() {
     only_one_arg
-    echo "Checking for update..."
+    ecgo -teal "=> Checking for update..."
     NEW_V=` curl -s $UP_URL `
     if [[ "$NEW_V" != "version"* ]]; then
         ERROR_EX="version*"
         ERROR_BUG=$NEW_V
         debug_output
-        echo ">>ERROR: an error has occurred"
-        echo "Unable to check for update."
-        echo 
-        echo ">>FAIL: check for update failed!"
-        echo "Try: "
-        echo ">> $ cat $BUG_FILE  (for debug)"
+        ecgo -red "ERROR: an error has occurred"
+        ecgo -red " Unable to check for update."
+        ecgo 
+        ecgo -red "FAIL: check for update failed!"
+        ecgo " Try: "
+        ecgo " >> $ cat $BUG_FILE  (for debug)"
         exit 1
     fi
     if [[ "$NEW_V" != "$VERSION_HUBGET" ]]; then
-        echo ">>INFO: An update is avalable,"
-        echo "Your hubget version: $VERSION_HUBGET"
-        echo "New version: $NEW_V"
-        echo "Do: "
-        echo " >> $ cd ~/easy-clone/  (or wherever it is)"
-        echo " >> $ ./update.sh  (to update hubget)"
+        ecgo -blue "INFO: An update is avalable."
+        ecgo -green " Your hubget version: $VERSION_HUBGET"
+        ecgo -green " New version: $NEW_V"
+        ecgo -green " Do: "
+        ecgo -green " >> $ cd ~/easy-clone/  (or wherever it is)"
+        ecgo -green " >> $ ./update.sh  (to update hubget)"
         exit 0
     else
-        echo ">>INFO: hubget is at latest version: $NEW_V"
+        ecgo -blue "=> INFO: hubget is at latest version: $NEW_V"
     fi
-	exit 0
+        exit 0
 }
 
 clear_bug() {
     only_one_arg
-    echo "Clearing: $BUG_FILE"
+    ecgo -blue "=> Clearing: $BUG_FILE"
     if [ ! -f $BUG_FILE ]; then
-        echo "ERROR: $BUG_FILE does not exist!"
-        echo " no bugs reported yet."
+        ecgo -red "ERROR: $BUG_FILE does not exist!"
+        ecgo -red " no bugs reported yet."
         exit 1
     fi
-	cat /dev/null > $BUG_FILE
-	echo "File cleared: $BUG_FILE"
-	exit 0
+        cat /dev/null > $BUG_FILE
+        ecgo -blue "=> File cleared: $BUG_FILE"
+        exit 0
 }
 
 source ~/easy-clone/auto-complete.sh
@@ -152,7 +142,7 @@ check_arg() {
         print_version
         return
     elif [[ "$OPTION" == "-"* ]]; then
-        echo "Option not found! :P  $OPTION"
+        ecgo -red "Option not found! :P  $OPTION"
         exit 1
     fi
 }
@@ -161,33 +151,40 @@ check_arg
 
 if [ "$NO_UP" == "true" ]; then
     if [ -z $2 ]; then
-        echo "ERROR: $OPTION flag needs at least two arguments!"
-        echo " only revived one!"
-        echo " eg. >> $ hubget $OPTION WestleyK/easy-clone"
+        ecgo -red "ERROR: $OPTION flag needs at least two arguments!"
+        ecgo -red " only revived one!"
+        ecgo -red " eg. >> $ hubget $OPTION WestleyK/easy-clone"
         exit 1
     fi
 fi
 
-NAME=` echo $REPO | rev | cut -f1 -d"/" | rev `
-echo "Repo name: '$NAME'"
+NAME=` ecgo $REPO | rev | cut -f1 -d"/" | rev `
+ecgo -blue -n "=> INFO: "
+ecgo "Repo name: '$NAME'"
 
 if [ -d $NAME ]; then
-    echo "FATAL ERROR:"
-    echo "'$NAME'  already exist!"
+    ecgo -red "FATAL ERROR:"
+    ecgo -red "'$NAME'  already exist!"
     exit 1
 fi
 
 #if [ -f $ZIP_FILE ]; then
-#    echo "FATAL ERROR:"
-#    echo "'$ZIP_FILE'  already exist!"
+#    ecgo "FATAL ERROR:"
+#    ecgo "'$ZIP_FILE'  already exist!"
 #    exit 1
 #fi
 
-echo "Cloning repo..."
-URL="$( echo "https://github.com/"$REPO )"
+ecgo -blue "=> Cloning repo..."
+URL="$( ecgo "https://github.com/"$REPO )"
 
-wget -O /tmp/output_hubget_url_test.txt $URL
-rm -f /tmp/output_hubget_url_test.txt
+#wget -O /tmp/output_hubget_url_test.txt $URL
+#rm -f /tmp/output_hubget_url_test.txt
+
+IF_URL=` curl -s --head $URL | head -1 `
+if [[ "$IF_URL" != *"OK"* ]]; then
+    ecgo -red "ERROR: URL not found."
+    exit 1
+fi
 
 git clone $URL
 
@@ -196,17 +193,17 @@ git clone $URL
 
 IS_FILE=` cat ~/easy-clone/option-url.txt `
 if [[ "$IS_FILE" != *"$REPO"* ]]; then
-    echo "Adding $REPO to: ~/easy-clone/option-url.txt"
-    echo $REPO >> ~/easy-clone/option-url.txt
+    ecgo -blue "=> Adding $REPO to: ~/easy-clone/option-url.txt"
+    ecgo $REPO >> ~/easy-clone/option-url.txt
 fi
 
 if [ "$NO_UP" != "true" ]; then
-    echo "Checking for update, because no '-nu' or '-no_update' flag was specified."
+    ecgo -blue "=> Checking for update, because no '-nu' or '-no_update' flag was specified."
     check_update
     exit 0
 fi
 
-echo "Done."
+ecgo -green "Done."
 
 exit 0
 

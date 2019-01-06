@@ -2,7 +2,7 @@
 # Created by: WestleyK
 # Email: westley@sylabs.io
 # version-1.4.0
-# Date: Dec 22, 2018
+# Date: Jan 2, 2018
 # https://github.com/WestleyK/easy-clone
 #
 # The Clear BSD License
@@ -16,11 +16,13 @@
 set -e
 
 VERSION_HUBGET="version-1.4.0"
-DATE_HUBGET="Dec 22, 2018"
+DATE_HUBGET="Jan 2, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
 
 UP_URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/script-version.txt"
+
+VERB="false"
 
 if ! [ -x "$(command -v ecgo)" ]; then
     echo "ERROR: need: ecgo"
@@ -29,10 +31,10 @@ if ! [ -x "$(command -v ecgo)" ]; then
     exit 1        
 fi
 
-if ! [ -x "$(command -v str)" ]; then
-    ecgo --fatal "need: str"
-    ecgo "Please install str"
-    ecgo "https://github.com/WestleyR/str"
+if ! [ -x "$(command -v strcomp)" ]; then
+    ecgo --fatal "\`strcomp' not installed!"
+    ecgo "Please install strcomp"
+    ecgo "https://github.com/WestleyR/strcomp"
     exit 1        
 fi
 
@@ -48,10 +50,11 @@ help_menu() {
 %{white}%{bold}OPTIONS:%{r}
     %{yellow}%{bold}-h, --help               %{r}:%{r} %{teal}print help menu.%{r}
     %{yellow}%{bold}-c, --check_update       %{r}:%{r} %{teal}check for update.%{r}
+    %{yellow}%{bold}-v, --verbose            %{r}:%{r} %{teal}print more info.%{r}
     %{yellow}%{bold}-n, --no-update          %{r}:%{r} %{teal}don't check for update.%{r}
-    %{yellow}%{bold}--clearbug, --clear-bug  %{r}:%{r} %{teal}clear debug file, run --info to see.%{r}
+    %{yellow}%{bold}    --clear-bug          %{r}:%{r} %{teal}clear debug file, run --info to see.%{r}
     %{yellow}%{bold}-i, --info               %{r}:%{r} %{teal}print script version.%{r}
-    %{yellow}%{bold}-v, --version            %{r}:%{r} %{teal}print script version.%{r}
+    %{yellow}%{bold}    --version            %{r}:%{r} %{teal}print script version.%{r}
 
 %{blue}%{bold}This software is licensed under a Clear BSD License.%{r}
 %{green}source code: https://github.con/WestleyK/easy-clone%{r}"
@@ -59,7 +62,7 @@ help_menu() {
 }
 
 print_version() {
-    ecgo -teal -a "${VERSION_HUBGET}, ${DATE_HUBGET}"
+    ecgo -teal "${VERSION_HUBGET}, " -r -blue "${DATE_HUBGET}"
     exit 0
 }
 
@@ -70,6 +73,18 @@ autocomplete file    : ~/easy-clone/option-url.txt
 autocomplete script  : ~/easy-clone/auto-complete.sh"
 
     exit 0
+}
+
+verb() {
+    if [ "$VERB" = "true" ]; then
+        ecgo --info "$@"
+    fi
+}
+
+debug() {
+    if [ $(strcomp -c "$DEBUG" "true") == "true" ]; then
+        ecgo --debug "$@"
+    fi
 }
 
 debug_output() {
@@ -92,10 +107,14 @@ only_one_arg() {
 }
 
 check_update() {
+    verb "Checking for one argument..."
     only_one_arg
     ecgo --info "Checking for update..."
     NEW_V=` curl -s $UP_URL `
+    verb "New version: ${NEW_V}"
+    verb "Checking if: ${NEW_V} starts with: version"
     if [[ "$NEW_V" != "version"* ]]; then
+        verb "An error has occurred"
         ERROR_EX="version*"
         ERROR_BUG=$NEW_V
         debug_output
@@ -107,8 +126,26 @@ check_update() {
         ecgo " >> $ cat $BUG_FILE  (for debug)"
         exit 1
     fi
-    NEW_VERSION=` ecgo -a "$NEW_V" | str -e . | str -e v | str -e e | str -e r | str -e s | str -e i | str -e o | str -e n | str -e - `
-    CUR_VERSION=` ecgo -a "$VERSION_HUBGET" | str -e . | str -e v | str -e e | str -e r | str -e s | str -e i | str -e o | str -e n | str -e - `
+    # exclude the `version-.` from the string
+    verb "Excluding: version-. from: ${NEW_V} (the new version)"
+    NEW_VERSION=` ecgo -a "$NEW_V" | strcomp -e "version-." `
+    verb "Excluding: version-. from: ${VERSION_HUBGET} (the current version)"
+    CUR_VERSION=` ecgo -a "$VERSION_HUBGET" | strcomp -e "version-." `
+    # test to make sure its a int
+    verb "Testing if: ${NEW_VERSION} is a int..."
+    if [[ $(ecgo -a "$NEW_VERSION" | strcomp -i) != "true" ]]; then
+        ecgo -f "Unable to detecte version"
+        ecgo -d "${NEW_VERSION}: Not a int"
+        exit 255
+    fi
+    verb "${NEW_VERSION}: is a int"
+    verb "Checking if current version (${CUR_VERSION}) is a int"
+    if [[ $(ecgo -a "$CUR_VERSION" | strcomp -i) != "true" ]]; then
+        ecgo -f "Unable to detecte version"
+        ecgo -d "${NEW_VERSION}: Not a int"
+        exit 255
+    fi
+    verb "Checking if NEW_VERSION (${NEW_VERSION}), is greater then CUR_VERSION (${CUR_VERSION})"
     if [[ "$NEW_VERSION" -gt "$CUR_VERSION" ]]; then
         ecgo --info"An update is avalable:"
         ecgo --info"Your hubget version: $VERSION_HUBGET"
@@ -146,11 +183,15 @@ if [ -z "$1" ]; then
 fi
 
 check_arg() {
+    verb "Checking if: ${OPTION} is a valid option..."
     if [ "$OPTION" == "-h" ] || [ "$OPTION" == "--help" ]; then
         help_menu
         return
     elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "--check-update" ]; then
         check_update
+        return
+    elif [ "$OPTION" == "-v" ] || [ "$OPTION" == "--verbose" ]; then
+        VERB="true"
         return
     elif [ "$OPTION" == "-n" ] || [ "$OPTION" == "--no-update" ]; then
         NO_UP="true"
@@ -161,21 +202,33 @@ check_arg() {
     elif [ "$OPTION" == "-i" ] || [ "$OPTION" == "--info" ]; then
         print_info
         return
-    elif [ "$OPTION" == "-v" ] || [ "$OPTION" == "--version" ]; then
+    elif [ "$OPTION" == "--version" ]; then
         print_version
         return
 #    elif [[ "$OPTION" == "-"* ]]; then
-    elif [[ $(str -s "-" "$OPTION") == "true" ]]; then
-        ecgo -red "Option not found! :P  $OPTION"
+    elif [[ $(strcomp -s "-" "$OPTION") == "true" ]]; then
+        verb "Option (${OPTION}) starts with a -"
+        verb "Exiting"
+        ecgo --fatal "Option not found! :P  ${OPTION}"
+#        ecgo -red "Option not found! :P  $OPTION"
         exit 1
     else
+        verb "Option: (${OPTION}) must be the repo name"
         REPO="$OPTION"
     fi
 }
 
 for OPTION in "$@"; do
+    verb "OPTION = ${OPTION}"
     check_arg
 done
+
+if [ "$VERB" = "true" ] && [ "$REPO" = "" ]; then
+    ecgo --fatal "Not enough arguments!"
+    exit 100
+fi
+
+verb "Repo name must be: ${REPO}"
 
 if [ "$NO_UP" == "true" ]; then
     if [ -z $2 ]; then
@@ -186,9 +239,10 @@ if [ "$NO_UP" == "true" ]; then
     fi
 fi
 
+ecgo --info "Adding (${REPO}) to github URL."
 URL="$( ecgo -a "https://github.com/"$REPO )"
 
-if [[ $(str -c ".git" "$URL") == "true" ]]; then
+if [[ $(strcomp -c ".git" "$URL") == "true" ]]; then
     ecgo --info "Removing '.git' from url..."
     URL=` ecgo -a "$URL" | rev | cut -c 5- | rev `
 fi
@@ -205,7 +259,7 @@ ecgo --info "Checking URL: " -blue "${URL}"
 
 IF_URL=` curl -s --head $URL | head -1 `
 #if [[ "$IF_URL" != *"OK"* ]]; then
-if [[ $(str -c "OK" "$IF_URL") != "true" ]]; then
+if [[ $(strcomp -c "OK" "$IF_URL") != "true" ]]; then
     ecgo --fatal "ERROR: URL not found:  ${URL}"
     exit 1
 fi

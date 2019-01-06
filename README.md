@@ -10,8 +10,7 @@
 cd ~/
 git clone https://github.com/WestleyK/easy-clone.git
 cd easy-clone/
-./make.sh
-sudo ./make.sh install
+sudo ./install.sh
 source ~/.bashrc
 ```
 

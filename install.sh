@@ -1,7 +1,7 @@
 #!/bin/bash
 # Created by: WestleyK
 # Email: westleyk@nym.hush.com
-# version-1.0.0
+# version-1.0.1
 # Date: Jan 5, 2018
 # https://github.com/WestleyK/easy-clone
 #
@@ -49,17 +49,12 @@ if [ ! -z $USERNAME ]; then
     if [[ -z $( cat "${HOME}/.bashrc" | grep 'easy-clone/auto-complete.sh') ]]; then
         ecgo --info "Adding: source ${HOME}/easy-clone/auto-complete.sh to: ${HOME}/.bashrc"
         ecgo -a "source ${HOME}/easy-clone/auto-complete.sh" >> "${HOME}/.bashrc"
-#        source $USR_HOME/.bashrc
     fi
-#    source $HOME/.bashrc
 fi
 
 ecgo -d "Home: $HOME"
 
 ecgo --debug "CWD: $(pwd)"
-
-#ecgo -l "$(pwd) ${HOME}/easy-clone" -l
-#ecgo
 
 if [[ "$(pwd)" != "${HOME}/easy-clone" ]]; then
     ecgo
@@ -84,7 +79,7 @@ fi
 ecgo --debug "UID: ${UID}"
 
 ecgo --info "Installing: ${SCRIPT_NAME} to: ${INSTALL_TO}..."
-#cp -f "$SCRIPT_NAME" "$INSTALL_TO"
+cp -f "$SCRIPT_NAME" "$INSTALL_TO"
 
 
 ecgo -i -green "DONE!"

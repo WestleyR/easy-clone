@@ -1,8 +1,8 @@
 #!/bin/bash
 # Created by: WestleyK
 # Email: westleyk@nym.hush.com
-# version-1.0.2
-# Date: Jan 10, 2018
+# version-1.0.3
+# Date: Jan 12, 2018
 # https://github.com/WestleyK/easy-clone
 #
 # The Clear BSD License
@@ -16,8 +16,12 @@
 set -e
 
 HOME_FILE="home-dir.txt"
+DEP="dependencies"
 SCRIPT_NAME="hubget"
 INSTALL_TO="/usr/local/bin"
+
+STRCOMP_URL="https://github.com/WestleyR/str/raw/master/pre-compiled/x86_64/strcomp"
+ECGO_URL="https://github.com/WestleyK/ecgo/raw/master/pre-compiled/ubuntu-x86_64/ecgo"
 
 USERNAME=""
 
@@ -36,6 +40,30 @@ source code: https://github.com/WestleyK/easy-clone"
 
     exit 0
 }
+
+if ! [ -x "$(command -v ecgo)" ]; then
+    echo "ERROR: Need \`echo'"
+    echo
+    echo "This will automaticly download the precompiled code from github."
+    echo
+    echo "For install instrunctions, visit:"
+    echo "https://github.com/WestleyK/ecgo"
+    echo
+    wget -O "$DEP/ecgo" "$ECGO_URL"
+    chmod +x "$DEP/ecgo"
+    cp "$DEP/ecgo" "/usr/bin"
+    ecgo --info "\`ecgo' Installed!" -l
+fi
+
+if ! [ -x "$(command -v strcomp)" ]; then
+    ecgo -error "Need \`strcomp'" -l
+    ecgo "This will automaticly download the precompiled code from github." -l
+    ecgo "For install instrunctions, visit:" -l "https://github.com/WestleyR/strcomp" -l
+    wget -O "$DEP/strcomp" "$STRCOMP_URL"
+    chmod +x "$DEP/strcomp"
+    cp "$DEP/strcomp" "/usr/bin"
+    ecgo --info "\`strcomp' Installed!" -l
+fi
 
 uninstall_script() {
     ecgo --warning "Uninstalling: ${SCRIPT_NAME}"
@@ -61,9 +89,27 @@ uninstall_script() {
         fi
         rm -f "${INSTALL_TO}${SCRIPT_NAME}"
     fi
+#    ecgo --info "Removing auto-complete.sh from ~/.bashrc..."
+    IS_SOURCE=false
+    if [[ ! -z $( cat "${HOME}/.bashrc" | grep 'easy-clone/auto-complete.sh') ]]; then
+        ecgo -l -bold -negative --warning -yellow -negative "You should remove the following line from: " -bold "${HOME}/.bashrc:"
+        ecgo "$(cat ${HOME}/.bashrc | grep "source /home/westleyk/*easy-clone/auto-complete.sh" )" -l
+        IS_SOURCE=true
 
+
+##        sed -i '' "/source\ \/home\/westleyk\/*easy-clone\/auto-complete.sh/d" $file
+#        sed -ie '/source\ \/home\/westleyk\/*easy-clone\/auto-complete.sh/d' ~/foo
+#        cat ${HOME}/.bashrc | grep -v "source /home/westleyk/*easy-clone/auto-complete.sh" >> ${HOME}/foo
+#        ecgo "Removed source."
+#    else
+#        ecgo --info "No source to remove."
+    fi    
     ecgo -l --info "Uninstall: SUCCESSFULL!"
-    ecgo -green "DONE." -l
+    if [ "$IS_SOURCE" = true ]; then
+        ecgo -green "DONE. " -r -teal -bold "And remenber to remove the source line from your .bashrc" -l
+    else
+        ecgo -green "DONE." -l
+    fi
 
     exit 0
 }

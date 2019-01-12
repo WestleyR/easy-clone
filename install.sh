@@ -41,6 +41,10 @@ source code: https://github.com/WestleyK/easy-clone"
     exit 0
 }
 
+if [ ! -e "$DEP" ]; then
+    mkdir "$DEP"
+fi
+
 if ! [ -x "$(command -v ecgo)" ]; then
     echo "ERROR: Need \`echo'"
     echo

@@ -1,8 +1,8 @@
 #!/bin/bash
 # Created by: WestleyK
 # Email: westleyk@nym.hush.com
-# Date: Jan 9, 2018
-# version-1.0.4
+# Date: Jan 15, 2018
+# version-1.0.5
 # https://github.com/WestleyK/easy-clone
 #
 # The Clear BSD License
@@ -14,7 +14,7 @@
 #
 
 _auto_complete() {
-    OPTION=$( cat option-url.txt )
+    OPTION=$( cat ~/easy-clone/option-url.txt )
     local cur=${COMP_WORDS[COMP_CWORD]}
     COMPREPLY=( $(compgen -W "$OPTION" -- $cur) )
 }

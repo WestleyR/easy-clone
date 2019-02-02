@@ -15,7 +15,7 @@
 
 set -e
 
-VERSION_HUBGET="version-1.4.0"
+VERSION_HUBGET="version-1.4.1"
 DATE_HUBGET="Feb 2, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"

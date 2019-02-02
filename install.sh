@@ -1,8 +1,8 @@
 #!/bin/bash
 # Created by: WestleyK
 # Email: westleyk@nym.hush.com
-# version-1.0.3
-# Date: Jan 12, 2018
+# version-1.0.4
+# Date: Feb 2, 2018
 # https://github.com/WestleyK/easy-clone
 #
 # The Clear BSD License
@@ -46,7 +46,7 @@ if [ ! -e "$DEP" ]; then
 fi
 
 if ! [ -x "$(command -v ecgo)" ]; then
-    echo "ERROR: Need \`echo'"
+    echo "ERROR: Need 'echo'"
     echo
     echo "This will automaticly download the precompiled code from github."
     echo
@@ -56,17 +56,17 @@ if ! [ -x "$(command -v ecgo)" ]; then
     wget -O "$DEP/ecgo" "$ECGO_URL"
     chmod +x "$DEP/ecgo"
     cp "$DEP/ecgo" "/usr/bin"
-    ecgo --info "\`ecgo' Installed!" -l
+    ecgo --info "'ecgo' Installed!" -l
 fi
 
 if ! [ -x "$(command -v strcomp)" ]; then
-    ecgo -error "Need \`strcomp'" -l
+    ecgo -error "Need 'strcomp'" -l
     ecgo "This will automaticly download the precompiled code from github." -l
     ecgo "For install instrunctions, visit:" -l "https://github.com/WestleyR/strcomp" -l
     wget -O "$DEP/strcomp" "$STRCOMP_URL"
     chmod +x "$DEP/strcomp"
     cp "$DEP/strcomp" "/usr/bin"
-    ecgo --info "\`strcomp' Installed!" -l
+    ecgo --info "'strcomp' Installed!" -l
 fi
 
 uninstall_script() {
@@ -120,12 +120,15 @@ uninstall_script() {
 
 check_args() {
     OPTION="$1"
-    if [[ $(ecgo -a "$OPTION" | strcomp -s "--user=") = "true" ]]; then
-        USERNAME=` ecgo -a "$OPTION" | cut -c 8- `
-    elif [[ $(ecgo -a "$OPTION" | strcomp -s "--username=") = "true" ]]; then
-        USERNAME=` ecgo -a "$OPTION" | cut -c 12- `
-    elif [[ $(ecgo -a "$OPTION" | strcomp -s "--prefix=") = "true" ]]; then
-        INSTALL_TO=` ecgo -a "$OPTION" | cut -c 10- `
+    if [[ $(ecgo -a "$OPTION" | strcomp -s="--user=") = 0 ]]; then
+        USERNAME=` ecgo -a "$OPTION" | strcomp --cut-start=7 `
+        ecgo -d "USERNAME: ${USERNAME}"
+    elif [[ $(ecgo -a "$OPTION" | strcomp -s="--username=") = 0 ]]; then
+        USERNAME=` ecgo -a "$OPTION" | strcomp --cut-start=11 `
+        ecgo -d "USERNAME: ${USERNAME}"
+    elif [[ $(ecgo -a "$OPTION" | strcomp -s="--prefix=") = 0 ]]; then
+        INSTALL_TO=` ecgo -a "$OPTION" | strcomp --cut-start=9 `
+        ecgo -d "INSTALLTO: ${INSTALL_TO}"
     elif [[ "$OPTION" = "-h" ]] || [[ "$OPTION" = "--help" ]]; then
         help_usage
     elif [[ "$OPTION" = "uninstall" ]] || [[ "$OPTION" = "remove" ]]; then
@@ -140,14 +143,14 @@ for OPTION in "$@"; do
     check_args "$OPTION"
 done
 
-ecgo --info "Installing to: ${INSTALL_TO}."
+ecgo --info "Installing to: ${INSTALL_TO}"
 ecgo -d "Home: $HOME"
 ecgo --debug "CWD: $(pwd)"
 
 if [ ! -z $USERNAME ]; then
     ecgo --info "Username set: $USERNAME"
     NEW_HOME=`ecgo -a "/home/${USERNAME}"`
-    ecgo --debug "New home: ${NEW_HOME}."
+    ecgo --debug "New home: ${NEW_HOME}"
     if [ ! -f "${NEW_HOME}/.bashrc" ]; then
         ecgo -l --fatal "Install: ${NEW_HOME}/.bashrc: File not found."
         ecgo "Wrong username maybe?" -l
@@ -165,12 +168,12 @@ if [ ! -z $USERNAME ]; then
 else
     if [[ "$(pwd)" != "${HOME}/easy-clone" ]]; then
         ecgo -l --fatal "Install failed."
-        ecgo "Try running with \`--username=your_username'" -l
+        ecgo "Try running with '--username=your_username'" -l
         exit 100
     fi
 fi
 
-if [[ -z $( cat "${HOME}/.bashrc" | grep 'easy-clone/auto-complete.sh') ]]; then
+if [[ -z $(cat "${HOME}/.bashrc" | grep 'easy-clone/auto-complete.sh') ]]; then
     ecgo --info "Adding: source ${HOME}/easy-clone/auto-complete.sh to: ${HOME}/.bashrc"
     ecgo -a "source ${HOME}/easy-clone/auto-complete.sh" >> "${HOME}/.bashrc"
 fi

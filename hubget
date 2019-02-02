@@ -1,8 +1,8 @@
 #!/bin/bash
 # Created by: WestleyK
 # Email: westley@sylabs.io
-# version-1.4.0
-# Date: Jan 2, 2018
+# version-1.4.1
+# Date: Feb 2, 2018
 # https://github.com/WestleyK/easy-clone
 #
 # The Clear BSD License
@@ -16,7 +16,7 @@
 set -e
 
 VERSION_HUBGET="version-1.4.0"
-DATE_HUBGET="Jan 2, 2018"
+DATE_HUBGET="Feb 2, 2018"
 
 BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
 
@@ -28,14 +28,14 @@ if ! [ -x "$(command -v ecgo)" ]; then
     echo "ERROR: need: ecgo"
     echo "Please install ecgo"
     echo "https://github.com/WestleyK/ecgo"
-    exit 1        
+    exit 1
 fi
 
 if ! [ -x "$(command -v strcomp)" ]; then
     ecgo --fatal "\`strcomp' not installed!"
-    ecgo "Please install strcomp"
+    ecgo "Please install strcomp version 1.0.0-beta-10 or greater"
     ecgo "https://github.com/WestleyR/strcomp"
-    exit 1        
+    exit 1
 fi
 
 help_menu() {
@@ -128,21 +128,21 @@ check_update() {
     fi
     # exclude the `version-.` from the string
     verb "Excluding: version-. from: ${NEW_V} (the new version)"
-    NEW_VERSION=` ecgo -a "$NEW_V" | strcomp -e "version-." `
+    NEW_VERSION=` ecgo -a "$NEW_V" | strcomp -e="version-." `
     verb "Excluding: version-. from: ${VERSION_HUBGET} (the current version)"
-    CUR_VERSION=` ecgo -a "$VERSION_HUBGET" | strcomp -e "version-." `
+    CUR_VERSION=` ecgo -a "$VERSION_HUBGET" | strcomp -e="version-." `
     # test to make sure its a int
     verb "Testing if: ${NEW_VERSION} is a int..."
-    if [[ $(ecgo -a "$NEW_VERSION" | strcomp -i) != "true" ]]; then
+    if [[ $(ecgo -a "$NEW_VERSION" | strcomp -i) != 0 ]]; then
         ecgo -f "Unable to detecte version"
         ecgo -d "${NEW_VERSION}: Not a int"
         exit 255
     fi
     verb "${NEW_VERSION}: is a int"
     verb "Checking if current version (${CUR_VERSION}) is a int"
-    if [[ $(ecgo -a "$CUR_VERSION" | strcomp -i) != "true" ]]; then
+    if [[ $(ecgo -a "$CUR_VERSION" | strcomp -i) != 0 ]]; then
         ecgo -f "Unable to detecte version"
-        ecgo -d "${NEW_VERSION}: Not a int"
+        ecgo -d "${CUR_VERSION}: Not a int"
         exit 255
     fi
     verb "Checking if NEW_VERSION (${NEW_VERSION}), is greater then CUR_VERSION (${CUR_VERSION})"
@@ -206,7 +206,7 @@ check_arg() {
         print_version
         return
 #    elif [[ "$OPTION" == "-"* ]]; then
-    elif [[ $(strcomp -s "-" "$OPTION") == "true" ]]; then
+    elif [[ $(ecgo -a "$OPTION" | strcomp -s="-") == 0 ]]; then
         verb "Option (${OPTION}) starts with a -"
         verb "Exiting"
         ecgo --fatal "Option not found! :P  ${OPTION}"
@@ -242,9 +242,9 @@ fi
 ecgo --info "Adding (${REPO}) to github URL."
 URL="$( ecgo -a "https://github.com/"$REPO )"
 
-if [[ $(strcomp -c ".git" "$URL") == "true" ]]; then
+if [[ $(ecgo -a "$URL" | strcomp -c=".git") == 0 ]]; then
     ecgo --info "Removing '.git' from url..."
-    URL=` ecgo -a "$URL" | rev | cut -c 5- | rev `
+    URL=` ecgo -a "$URL" | rev | strcomp --cut-start=4 | rev `
 fi
 
 NAME=` ecgo "$URL" | rev | cut -f1 -d"/" | rev `
@@ -259,7 +259,7 @@ ecgo --info "Checking URL: " -blue "${URL}"
 
 IF_URL=` curl -s --head $URL | head -1 `
 #if [[ "$IF_URL" != *"OK"* ]]; then
-if [[ $(strcomp -c "OK" "$IF_URL") != "true" ]]; then
+if [[ $(ecgo -a "$IF_URL" | strcomp -c="OK") != 0 ]]; then
     ecgo --fatal "ERROR: URL not found:  ${URL}"
     exit 1
 fi

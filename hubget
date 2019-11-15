@@ -1,13 +1,13 @@
 #!/bin/bash
 # Created by: WestleyK
-# Email: westley@sylabs.io
-# version-1.4.1
-# Date: Feb 2, 2018
-# https://github.com/WestleyK/easy-clone
+# Email: westleyr@nym.hush.com
+# version-2.0.0
+# Date: Nov 14, 2019
+# https://github.com/WestleyR/easy-clone
 #
 # The Clear BSD License
 #
-# Copyright (c) 2018 WestleyK
+# Copyright (c) 2018-2019 WestleyK
 # All rights reserved.
 #
 # This software is licensed under a Clear BSD License.
@@ -15,278 +15,91 @@
 
 set -e
 
-VERSION_HUBGET="version-1.4.1"
-DATE_HUBGET="Feb 2, 2018"
-
-BUG_FILE="/tmp/debug_hubget_$VERSION_HUBGET.txt"
+VERSION_HUBGET="version-2.0.0-beta-1, Nov 14, 2019"
 
 UP_URL="https://raw.githubusercontent.com/WestleyK/easy-clone/master/script-version.txt"
 
-VERB="false"
-
-if ! [ -x "$(command -v ecgo)" ]; then
-    echo "ERROR: need: ecgo"
-    echo "Please install ecgo"
-    echo "https://github.com/WestleyK/ecgo"
-    exit 1
-fi
-
-if ! [ -x "$(command -v strcomp)" ]; then
-    ecgo --fatal "\`strcomp' not installed!"
-    ecgo "Please install strcomp version 1.0.0-beta-10 or greater"
-    ecgo "https://github.com/WestleyR/strcomp"
-    exit 1
-fi
-
 help_menu() {
-    ecgo -o "%{white}%{bold}DESCRIPTION:%{r}
-%{teal}    simple, fast repo cloner, with %{bold}%{underline}<TAB>%{r}%{teal} autocomplete.%{r}
-%{teal}    automatlicy add repos to %{bold}%{underline}<TAB>%{r}%{teal} complete by typing it manualy,%{r}
-%{teal}    then next time you start typing that repo, %{bold}%{underline}<TAB>%{r}%{teal} will work.%{r}
+  echo "DESCRIPTION:"
+  echo "    simple, fast repo cloner, with <TAB> autocomplete."
+  echo "    automatlicy add repos to <TAB> complete by typing it manualy,"
+  echo "    then next time you start typing that repo, <TAB> will work."
+  echo ""
+  echo "USAGE:"
+  echo "    ./hubget [OPTION] [USERNAME/REPO_NAME]"
+  echo ""
+  echo "OPTIONS:"
+  echo "    -h, --help               : print help menu."
+  echo "    -c, --check_update       : check for update."
+  echo "        --version            : print script version."
+  echo ""
+  echo "This software is licensed under a Clear BSD License."
+  echo "source code: https://github.con/WestleyK/easy-clone"
 
-%{white}%{bold}USAGE:%{r}
-    %{green}%{bold}$0 %{r}%{blue}%{underline}[OPTION]%{r} %{teal}%{underline}[USERNAME/REPO_NAME]%{r}
-
-%{white}%{bold}OPTIONS:%{r}
-    %{yellow}%{bold}-h, --help               %{r}:%{r} %{teal}print help menu.%{r}
-    %{yellow}%{bold}-c, --check_update       %{r}:%{r} %{teal}check for update.%{r}
-    %{yellow}%{bold}-v, --verbose            %{r}:%{r} %{teal}print more info.%{r}
-    %{yellow}%{bold}-n, --no-update          %{r}:%{r} %{teal}don't check for update.%{r}
-    %{yellow}%{bold}    --clear-bug          %{r}:%{r} %{teal}clear debug file, run --info to see.%{r}
-    %{yellow}%{bold}-i, --info               %{r}:%{r} %{teal}print script version.%{r}
-    %{yellow}%{bold}    --version            %{r}:%{r} %{teal}print script version.%{r}
-
-%{blue}%{bold}This software is licensed under a Clear BSD License.%{r}
-%{green}source code: https://github.con/WestleyK/easy-clone%{r}"
-    exit 0
+  #    ecgo -o "%{white}%{bold}DESCRIPTION:%{r}
+  #%{teal}    simple, fast repo cloner, with %{bold}%{underline}<TAB>%{r}%{teal} autocomplete.%{r}
+  #%{teal}    automatlicy add repos to %{bold}%{underline}<TAB>%{r}%{teal} complete by typing it manualy,%{r}
+  #%{teal}    then next time you start typing that repo, %{bold}%{underline}<TAB>%{r}%{teal} will work.%{r}
+  #
+  #%{white}%{bold}USAGE:%{r}
+  #    %{green}%{bold}$0 %{r}%{blue}%{underline}[OPTION]%{r} %{teal}%{underline}[USERNAME/REPO_NAME]%{r}
+  #
+  #%{white}%{bold}OPTIONS:%{r}
+  #    %{yellow}%{bold}-h, --help               %{r}:%{r} %{teal}print help menu.%{r}
+  #    %{yellow}%{bold}-c, --check_update       %{r}:%{r} %{teal}check for update.%{r}
+  #    %{yellow}%{bold}    --version            %{r}:%{r} %{teal}print script version.%{r}
+  #
+  #%{blue}%{bold}This software is licensed under a Clear BSD License.%{r}
+  #%{green}source code: https://github.con/WestleyK/easy-clone%{r}"
+  exit 0
 }
 
 print_version() {
-    ecgo -teal "${VERSION_HUBGET}, " -r -blue "${DATE_HUBGET}"
-    exit 0
+  echo "${VERSION_HUBGET}"
+  exit 0
 }
-
-print_info() {
-    ecgo -a "source code          : https://github.com/WestleyK/easy-clone
-debug file           : ${BUG_FILE}
-autocomplete file    : ~/easy-clone/option-url.txt
-autocomplete script  : ~/easy-clone/auto-complete.sh"
-
-    exit 0
-}
-
-verb() {
-    if [ "$VERB" = "true" ]; then
-        ecgo --info "$@"
-    fi
-}
-
-debug() {
-    if [ $(strcomp -c "$DEBUG" "true") == "true" ]; then
-        ecgo --debug "$@"
-    fi
-}
-
-debug_output() {
-    DATE_RUN=` date `
-    ecgo "" >> $BUG_FILE
-    ecgo "" >> $BUG_FILE
-    ecgo "" >> $BUG_FILE
-    ecgo "" >> $BUG_FILE
-    ecgo $DATE_RUN >> $BUG_FILE
-    ecgo "expecting: $ERROR_EX" >> $BUG_FILE
-    ecgo "actral: $ERROR_BUG" >> $BUG_FILE
-}
-
-only_one_arg() {
-    if [ ! -z "$2" ]; then
-        ecgo --fatal "$OPTION flag only needs one argument!"
-        ecgo "  eg. $ ${0} $OPTION"
-        exit 1
-    fi
-}
-
-check_update() {
-    verb "Checking for one argument..."
-    only_one_arg
-    ecgo --info "Checking for update..."
-    NEW_V=` curl -s $UP_URL `
-    verb "New version: ${NEW_V}"
-    verb "Checking if: ${NEW_V} starts with: version"
-    if [[ "$NEW_V" != "version"* ]]; then
-        verb "An error has occurred"
-        ERROR_EX="version*"
-        ERROR_BUG=$NEW_V
-        debug_output
-        ecgo --fatal "An error has occurred"
-        ecgo -red " Unable to check for update."
-        ecgo 
-        ecgo --fatal -red "FAIL: check for update failed!"
-        ecgo " Try: "
-        ecgo " >> $ cat $BUG_FILE  (for debug)"
-        exit 1
-    fi
-    # exclude the `version-.` from the string
-    verb "Excluding: version-. from: ${NEW_V} (the new version)"
-    NEW_VERSION=` ecgo -a "$NEW_V" | strcomp -e="version-." `
-    verb "Excluding: version-. from: ${VERSION_HUBGET} (the current version)"
-    CUR_VERSION=` ecgo -a "$VERSION_HUBGET" | strcomp -e="version-." `
-    # test to make sure its a int
-    verb "Testing if: ${NEW_VERSION} is a int..."
-    if [[ $(ecgo -a "$NEW_VERSION" | strcomp -i) != 0 ]]; then
-        ecgo -f "Unable to detecte version"
-        ecgo -d "${NEW_VERSION}: Not a int"
-        exit 255
-    fi
-    verb "${NEW_VERSION}: is a int"
-    verb "Checking if current version (${CUR_VERSION}) is a int"
-    if [[ $(ecgo -a "$CUR_VERSION" | strcomp -i) != 0 ]]; then
-        ecgo -f "Unable to detecte version"
-        ecgo -d "${CUR_VERSION}: Not a int"
-        exit 255
-    fi
-    verb "Checking if NEW_VERSION (${NEW_VERSION}), is greater then CUR_VERSION (${CUR_VERSION})"
-    if [[ "$NEW_VERSION" -gt "$CUR_VERSION" ]]; then
-        ecgo --info"An update is avalable:"
-        ecgo --info"Your hubget version: $VERSION_HUBGET"
-        ecgo --info"New version: $NEW_V"
-        ecgo -green -bold "Do:"
-        ecgo -green -bold "  $ " -r -green "cd ~/easy-clone/                " -r -teal "# or wherever it is"
-        ecgo -green -bold "  $ " -r -green "./update.sh                     " -r -teal "# to update hubget"
-        ecgo -green -bold "  $ " -r -green "sudo cp hubget /usr/local/bin/  " -r -teal "# to install"
-        exit 0
-    elif [[ "$NEW_VERSION" -eq "$CUR_VERSION" ]]; then
-        ecgo --info "hubget is at latest version: $NEW_V"
-    else
-        ecgo --warning "Your version is greater then the current version! you should update this!"
-    fi
-    exit 0
-}
-
-clear_bug() {
-    only_one_arg
-    ecgo --info "Clearing: " -teal "$BUG_FILE"
-    if [ ! -f $BUG_FILE ]; then
-        ecgo --warning "$BUG_FILE does not exist!"
-        ecgo "         no bugs reported yet."
-        exit 0
-    fi
-    cat /dev/null > $BUG_FILE
-    ecgo -blue "=> File cleared: $BUG_FILE"
-    exit 0
-}
-
-source ~/easy-clone/auto-complete.sh
 
 if [ -z "$1" ]; then
-    help_menu
+  help_menu
 fi
 
 check_arg() {
-    verb "Checking if: ${OPTION} is a valid option..."
-    if [ "$OPTION" == "-h" ] || [ "$OPTION" == "--help" ]; then
-        help_menu
-        return
-    elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "--check-update" ]; then
-        check_update
-        return
-    elif [ "$OPTION" == "-v" ] || [ "$OPTION" == "--verbose" ]; then
-        VERB="true"
-        return
-    elif [ "$OPTION" == "-n" ] || [ "$OPTION" == "--no-update" ]; then
-        NO_UP="true"
-        return
-    elif [ "$OPTION" == "--clearbug" ] || [ "$OPTION" == "--clear-bug" ]; then
-        clear_bug
-        return
-    elif [ "$OPTION" == "-i" ] || [ "$OPTION" == "--info" ]; then
-        print_info
-        return
-    elif [ "$OPTION" == "--version" ]; then
-        print_version
-        return
-#    elif [[ "$OPTION" == "-"* ]]; then
-    elif [[ $(ecgo -a "$OPTION" | strcomp -s="-") == 0 ]]; then
-        verb "Option (${OPTION}) starts with a -"
-        verb "Exiting"
-        ecgo --fatal "Option not found! :P  ${OPTION}"
-#        ecgo -red "Option not found! :P  $OPTION"
-        exit 1
-    else
-        verb "Option: (${OPTION}) must be the repo name"
-        REPO="$OPTION"
-    fi
+  if [ "$OPTION" == "-h" ] || [ "$OPTION" == "--help" ]; then
+    help_menu
+    return
+  elif [ "$OPTION" == "-c" ] || [ "$OPTION" == "--check-update" ]; then
+    check_update
+    return
+  elif [ "$OPTION" == "--version" ]; then
+    print_version
+    return
+  else
+    REPO="$OPTION"
+  fi
 }
 
 for OPTION in "$@"; do
-    verb "OPTION = ${OPTION}"
-    check_arg
+  check_arg
 done
 
-if [ "$VERB" = "true" ] && [ "$REPO" = "" ]; then
-    ecgo --fatal "Not enough arguments!"
-    exit 100
+if [ "$REPO" = "" ]; then
+  echo "E: Not enough arguments!"
+  exit 100
 fi
 
-verb "Repo name must be: ${REPO}"
+URL="$(echo "https://github.com/"$REPO)"
 
-if [ "$NO_UP" == "true" ]; then
-    if [ -z $2 ]; then
-        ecgo --fatal "$OPTION flag needs at least two arguments!"
-        ecgo -red " only revived one!"
-        ecgo -red " eg. >> $ hubget $OPTION WestleyK/easy-clone"
-        exit 1
-    fi
-fi
+NAME=`echo "$URL" | rev | cut -f1 -d"/" | rev`
 
-ecgo --info "Adding (${REPO}) to github URL."
-URL="$( ecgo -a "https://github.com/"$REPO )"
-
-if [[ $(ecgo -a "$URL" | strcomp -c=".git") == 0 ]]; then
-    ecgo --info "Removing '.git' from url..."
-    URL=` ecgo -a "$URL" | rev | strcomp --cut-start=4 | rev `
-fi
-
-NAME=` ecgo "$URL" | rev | cut -f1 -d"/" | rev `
-ecgo --info "Repo name: " -yellow "'$NAME'"
-
-if [ -d $NAME ]; then
-    ecgo --fatal "ERROR: $NAME: already exist!"
-    exit 1
-fi
-
-ecgo --info "Checking URL: " -blue "${URL}"
-
-IF_URL=` curl -s --head $URL | head -1 `
-#if [[ "$IF_URL" != *"OK"* ]]; then
-if [[ $(ecgo -a "$IF_URL" | strcomp -c="OK") != 0 ]]; then
-    ecgo --fatal "ERROR: URL not found:  ${URL}"
-    exit 1
-fi
-
-ecgo --info "Cloning repo..."
-
-ecgo -n -green -s
 git clone $URL
-ecgo -n -r
 
-IS_FILE=` cat ~/easy-clone/option-url.txt `
-if [[ "$IS_FILE" != *"$REPO"* ]]; then
-    ecgo --info "Adding $REPO to: ~/easy-clone/option-url.txt"
-    ecgo $REPO >> ~/easy-clone/option-url.txt
+if ! grep -q "$REPO" ${HUBGET_PREFIX}/easy-clone/github-urls/hubget-options; then
+  echo "I: adding ${REPO} to new options..."
+  echo $REPO >> ${HUBGET_PREFIX}/easy-clone/github-urls/hubget-options
 fi
 
-if [ "$NO_UP" != "true" ]; then
-    ecgo --info "Checking for update, because no '-nu' or '-no_update' flag was specified."
-    check_update
-    exit 0
-fi
-
-ecgo -green "Done."
+echo "Done."
 
 exit 0
 
-
-#
-# End script
-#
+# vim: tabstop=2 shiftwidth=2 expandtab

@@ -1,8 +1,8 @@
 #!/bin/bash
 # Created by: WestleyK
 # Email: westleyk@nym.hush.com
-# version-1.0.6
-# Date: Nov 14, 2019
+# version-1.0.8
+# Date: Nov 15, 2019
 # https://github.com/WestleyK/easy-clone
 #
 # The Clear BSD License
@@ -21,44 +21,66 @@ URL_FILE="hubget-options"
 COMPLETE_FILE="hubget-complete.sh"
 
 PREFIX="${HOME}/"
-COMPLETION_PREFIX=""
+ETC_DIR=""
 
-help_usage() {
-  echo "Usage: ./install.sh [--prefix=/non/root/location]"
+SKIP_CHECK=0
+
+print_usage() {
+  echo "Usage: ./install.sh [--prefix /non/root/location]"
+  echo "                    [--etc-dir /non/root/etc]"
+  echo "                    [--skip-check]"
+  echo ""
+  echo "Options:"
+  echo "  -p, --prefix /path/to/install        specify a prefix to install"
+  echo "  -e, --etc-dir /path/to/non-root/etc  specify a non-root etc dir,"
+  echo "                                       only used for brew"
+  echo "  -s, --skip-check                     skip the shasum check"
+  echo ""
 
   exit 0
 }
 
-while getopts 'p:c:h' OPTION; do
-  case "$OPTION" in
-    h)
-      help_usage
+while [[ $# -gt 0 ]]; do
+  option="$1"
+  case $option in
+    -p|--prefix)
+      PREFIX="$2"
+      shift
+      shift
       ;;
-
-    p)
-      echo HU $OPTARG
-      PREFIX="$OPTARG"
+    -e|--etc-dir)
+      ETC_DIR="$2"
+      shift
+      shift
       ;;
-
-    c)
-      COMPLETION_PREFIX="$OPTARG"
+    -s|--skip-check)
+      SKIP_CHECK=1
+      shift
       ;;
-
-    ?)
-      exit 1
+    -h|--help)
+      print_usage
+      exit 0
+      ;;
+    *)
+      echo "E: unknown argument: ${option}"
+      exit 22
       ;;
   esac
 done
-shift "$(($OPTIND -1))"
 
-echo "Installing to ${PREFIX}"
+if [ $SKIP_CHECK -eq 0 ]; then
+  echo "I: checking shasum of hubget, hubget-complete.sh, and install.sh ..."
+  sha_cmd=$(command -v sha256sum || command -v shasum)
+  $sha_cmd -c checksum.sha256
+  echo "PASS"
+fi
 
 HUBGET_DIR="easy-clone"
 
 mkdir -p ${PREFIX}/bin
 mkdir -p ${PREFIX}/${HUBGET_DIR}/github-urls
 
-if [ -z $COMPLETION_PREFIX ]; then
+if [ -z $ETC_DIR ]; then
   BASHRC_FILE=""
 
   if test -f ~/.bashrc; then
@@ -92,18 +114,23 @@ EOF
   fi
   cp -f ${COMPLETE_FILE} ${PREFIX}/${HUBGET_DIR}
 
+  cp -f ${URL_FILE} ${PREFIX}/${HUBGET_DIR}/github-urls
+
+  chmod 755 ${PREFIX}/${HUBGET_DIR}/github-urls
+  chmod 755 ${PREFIX}/${HUBGET_DIR}/github-urls/${URL_FILE}
+
 else
-  mkdir -p ${COMPLETION_PREFIX}
-  cp -f ${COMPLETE_FILE} ${COMPLETION_PREFIX}
+  mkdir -p ${ETC_DIR}/bash_completion.d
+  cp -f ${COMPLETE_FILE} ${ETC_DIR}/bash_completion.d
+
+  if ! test -f ${ETC_DIR}/easy-clone/github-urls/${URL_FILE}; then
+    mkdir -p ${ETC_DIR}/easy-clone/github-urls
+    cp -f ${URL_FILE} ${ETC_DIR}/easy-clone/github-urls
+  fi
+
+  chmod 755 ${ETC_DIR}/easy-clone/github-urls
+  chmod 755 ${ETC_DIR}/easy-clone/github-urls
 fi
-
-cp -f ${URL_FILE} ${PREFIX}/${HUBGET_DIR}/github-urls
-
-chmod 755 ${PREFIX}/${HUBGET_DIR}/github-urls
-chmod 755 ${PREFIX}/${HUBGET_DIR}/github-urls/${URL_FILE}
-
-#chown ${USER}:${USER} ${PREFIX}/${HUBGET_DIR}/github-urls
-#chown ${USER}:${USER} ${PREFIX}/${HUBGET_DIR}/github-urls/${URL_FILE}
 
 cp -f ${TARGET} ${PREFIX}/bin
 
